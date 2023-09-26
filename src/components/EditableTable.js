@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { Form, Table, Typography, Popconfirm, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  DownloadOutlined,
+  RightCircleOutlined,
+  EditOutlined,
+  SaveOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
 import renderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
+import { Excel } from "antd-table-saveas-excel";
 
 const EditableTable = ({
   data,
@@ -51,7 +59,7 @@ const EditableTable = ({
     ...languages.map((language) => ({
       title: language.title,
       dataIndex: language.dataIndex,
-      width: "15%",
+      width: "14%",
       render: (_, record) =>
         renderTranslatedCell(record, language.dataIndex, isEditing),
       filterDropdown: ({
@@ -83,41 +91,38 @@ const EditableTable = ({
       },
     })),
     {
-      title: (
-        <span>
-          Operation{" "}
-          <Button
-            type="primary"
-            style={{ fontSize: '12px', padding: '2px 2px' }}
-            onClick={() => setShowEmptyData(!showEmptyData)}
-          >
-            {showEmptyData ? "Empty Data" : "Non-Empty Data"}
-          </Button>
-        </span>
-      ),
+      title: "Operations",
       dataIndex: "operation",
-      width: "15%",
+      width: "14%",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Typography.Link
+            <Button
               onClick={() => save(record.key)}
               style={{ marginRight: 8 }}
+              icon={<SaveOutlined />}
             >
               Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
+            </Button>
+            <Button>
+              <Popconfirm
+                title="Sure to cancel?"
+                icon={<DeleteOutlined />}
+                onConfirm={cancel}
+              >
+                <a>Cancel</a>
+              </Popconfirm>
+            </Button>
           </span>
         ) : (
-          <Typography.Link
+          <Button
             disabled={editingKey !== ""}
             onClick={() => edit(record)}
+            icon={<EditOutlined />}
           >
             Edit
-          </Typography.Link>
+          </Button>
         );
       },
     },
@@ -153,6 +158,15 @@ const EditableTable = ({
         });
       });
 
+  const handleExport = () => {
+    const excel = new Excel();
+    excel
+      .addSheet("Sheet1")
+      .addColumns(mergedColumns)
+      .addDataSource(filteredData)
+      .saveAs("i18n.xlsx");
+  };
+
   return (
     <>
       <Form form={form} component={false}>
@@ -173,6 +187,33 @@ const EditableTable = ({
           }}
         />
       </Form>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          type="primary"
+          size="small"
+          style={{ marginLeft: "0.5cm" }}
+          icon={<DownloadOutlined />}
+          onClick={handleExport}
+        >
+          Export to Excel
+        </Button>
+
+        <div style={{ marginLeft: "2cm" }}>
+          <Button
+            type="primary"
+            size="small"
+            icon={<RightCircleOutlined />}
+            onClick={() => setShowEmptyData(!showEmptyData)}
+          >
+            {showEmptyData ? "Empty Data" : "Non-Empty Data"}
+          </Button>
+        </div>
+      </div>
     </>
   );
 };
