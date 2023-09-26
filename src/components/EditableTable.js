@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Table, Typography, Popconfirm, Button } from "antd";
+import { Form, Table, Popconfirm, Button } from "antd";
 import {
   SearchOutlined,
   DownloadOutlined,
@@ -21,6 +21,7 @@ const EditableTable = ({
   cancel,
   editingKey,
   form,
+  setData, // Pass the setData function as a prop
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   const languages = [
@@ -61,7 +62,7 @@ const EditableTable = ({
       dataIndex: language.dataIndex,
       width: "14%",
       render: (_, record) =>
-        renderTranslatedCell(record, language.dataIndex, isEditing),
+        renderTranslatedCell(record, language.dataIndex, isEditing, setData, data),
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,

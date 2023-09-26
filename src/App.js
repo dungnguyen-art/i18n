@@ -47,6 +47,7 @@ const App = () => {
       console.log("Validate Failed:", errInfo);
     }
   };
+
   return (
     <EditableTable
       data={data}
@@ -56,6 +57,7 @@ const App = () => {
       cancel={cancel}
       editingKey={editingKey}
       form={form} // Pass form as a prop
+      setData={setData}
     />
   );
 };

@@ -9,9 +9,11 @@ const EditableCell = ({
     record,
     index,
     children,
+    updateAllFields,
     ...restProps
   }) => {
     const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
+    console.log('input node',inputNode);
     return (
       <td {...restProps}>
         {editing ? (
@@ -27,7 +29,7 @@ const EditableCell = ({
               },
             ]}
           >
-            {inputNode}
+          {inputNode}
           </Form.Item>
         ) : (
           children
