@@ -1,8 +1,7 @@
-import {Form} from "antd";
-import { useState } from "react"
-import mergedData from "./MergeData"
-import EditableTable from './components/EditableTable'; // Import the EditableTable component
-
+import { Form } from "antd";
+import { useState, useEffect } from "react";
+import mergedData from "./MergeData";
+import EditableTable from "./components/EditableTable"; // Import the EditableTable component
 
 const App = () => {
   // State management
@@ -15,7 +14,10 @@ const App = () => {
   const [editingKey, setEditingKey] = useState("");
   // Functions for handling editing
   const isEditing = (record) => record.key === editingKey;
-
+  useEffect(() => {
+    // Save data to localStorage whenever it changes
+    localStorage.setItem("mergedData", JSON.stringify(data));
+  }, [data]);
   const edit = (record) => {
     form.setFieldsValue({
       name: "",
@@ -33,24 +35,14 @@ const App = () => {
   const save = async (key) => {
     try {
       const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        console.log('loglog', item);
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        localStorage.setItem("mergedData", JSON.stringify(newData)); // Store data in localStorage
-        setEditingKey("");
-      } else {
-        newData.push(row);
-        localStorage.setItem("mergedData", JSON.stringify(newData)); // Store data in localStorage
-        setData(newData);
-        setEditingKey("");
-      }
+      const newData = data.map((item) => {
+        if (item.key === key) {
+          return { ...item, ...row };
+        }
+        return item;
+      });
+      setData(newData);
+      setEditingKey("");
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
     }
@@ -62,7 +54,7 @@ const App = () => {
       edit={edit}
       save={save}
       cancel={cancel}
-      editingKey={editingKey} 
+      editingKey={editingKey}
       form={form} // Pass form as a prop
     />
   );

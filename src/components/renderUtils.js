@@ -12,7 +12,6 @@ export const renderEditableCell = (record, dataIndex, title, inputType, isEditin
 );
 
 const renderTranslatedCell = (record, dataIndex, isEditing) => {
-  console.log('isEditing: ',isEditing)
   const { web, mobi, extension } = record[dataIndex];
   const allEqual = web === mobi && mobi === extension;
 
