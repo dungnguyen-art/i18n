@@ -1,0 +1,82 @@
+{
+    "common": {
+      "create": {
+        "en": "generate",
+        "vi": "Tạo",
+        "zh": "创建",
+        "ja": "作成",
+        "es": ""
+      },
+      "edit": {
+        "en": "alter",
+        "vi": "Chỉnh sửa",
+        "zh": "编辑",
+        "ja": "編集",
+        "es": "Editar" 
+      },
+      "save": {
+        "en": "deliver",
+        "vi": "Ok",
+        "zh": "保存",
+        "ja": "保存",
+        "es": "Guardar"
+      },
+      "cancel": {
+        "en": "abolish",
+        "vi": "Hủy bỏ",
+        "zh": "取消",
+        "ja": "キャンセル",
+        "es": "Cancelar" 
+      },
+      "delete": {
+        "en": "Delete",
+        "vi": "Xóa",
+        "zh": "删除",
+        "ja": "削除",
+        "es": "Eliminar"
+      },
+      "submit": {
+        "en": "Submit",
+        "vi": "Gửi",
+        "zh": "提交",
+        "ja": "提出",
+        "es": "Enviar"
+      },
+      "close": {
+        "en": "Close",
+        "vi": "Đóng",
+        "zh": "关闭",
+        "ja": "閉じる",
+        "es": "Cerrar"
+      },
+      "confirm": {
+        "en": "Confirm",
+        "vi": "Xác nhận",
+        "zh": "确认",
+        "ja": "確認",
+        "es": "Confirmar"
+      },
+      "back": {
+        "en": "Back",
+        "vi": "Quay lại",
+        "zh": "返回",
+        "ja": "戻る",
+        "es": "Volver" 
+      },
+      "error": {
+        "en": "Error",
+        "vi": "Lỗi",
+        "zh": "错误",
+        "ja": "エラー",
+        "es": "Error"
+      },
+      "success": {
+        "en": "Success",
+        "vi": "Thành công",
+        "zh": "成功",
+        "ja": "成功",
+        "es": "Éxito"
+      }
+    }
+  }
+  
