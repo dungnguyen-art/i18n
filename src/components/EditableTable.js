@@ -9,9 +9,10 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
-import renderTranslatedCell from "./renderUtils";
+import RenderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
+import {Render} from "./renderUtils"
 
 const EditableTable = ({
   data,
@@ -62,7 +63,7 @@ const EditableTable = ({
       dataIndex: language.dataIndex,
       width: "14%",
       render: (_, record) =>
-        renderTranslatedCell(record, language.dataIndex, isEditing, setData, data),
+        Render(record, language.dataIndex, isEditing, setData, data),
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,

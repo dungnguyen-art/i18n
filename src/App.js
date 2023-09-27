@@ -12,6 +12,8 @@ const App = () => {
   });
 
   const [editingKey, setEditingKey] = useState("");
+  // const [useSingleInput, setUseSingleInput] = useState(true); 
+
   // Functions for handling editing
   const isEditing = (record) => record.key === editingKey;
   useEffect(() => {
