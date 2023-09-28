@@ -46,43 +46,21 @@ const RenderTranslatedCell = ({
   console.log("record: ", record);
   const allEqual = web === mobi && mobi === extension;
 
-  const [useSingleInput, setUseSingleInput] = useState(true);
+  const [useSingleInput, setUseSingleInput] = useState(false);
 
   const toggleInputMode = () => {
     setUseSingleInput((prevMode) => !prevMode);
   };
 
-  if (isEditing(record)) {
-    if (!allEqual) {
-      return (
-        <div>
-          {["web", "mobi", "extension"].map((key) => (
-            <div key={key} style={{ marginBottom: "10px" }}>
-              {renderEditableCell(
-                record,
-                [dataIndex, key],
-                key.charAt(0).toUpperCase() + key.slice(1),
-                "text",
-                isEditing(record),
-                false
-              )}
-            </div>
-          ))}
-          {/* Add a switch */}
-          {/* <Switch
-            checked={useSingleInput}
-            onChange={toggleInputMode}
-            checkedChildren="Single Input"
-            unCheckedChildren="Three Inputs"
-          /> */}
-        </div>
-      );
-    } else {
-      // If useSingleInput is true, render a single input; otherwise, render three inputs
-      return (
-        <div>
-          {useSingleInput ? (
+if (isEditing(record)) {
+  return (
+    <div >
+      {useSingleInput ? (
+        allEqual ? (
+          <div style={{ marginBottom: "10px"}}>
+            <label htmlFor={`${dataIndex}-web`}>Web:</label>
             <Input
+              id={`${dataIndex}-web`}
               placeholder={record[dataIndex]["web"]}
               value={record[dataIndex]["web"]}
               onChange={(e) => {
@@ -104,30 +82,59 @@ const RenderTranslatedCell = ({
                 setData(updatedData);
               }}
             />
-          ) : (
-            ["web", "mobi", "extension"].map((key) => (
-              <div key={key} style={{ marginBottom: "10px" }}>
-                {renderEditableCell(
-                  record,
-                  [dataIndex, key],
-                  key.charAt(0).toUpperCase() + key.slice(1),
-                  "text",
-                  isEditing(record),
-                  false
-                )}
-              </div>
-            ))
-          )}
+          </div>
+        ) : (
+          
+        ["web"].map((key) => (
+          <div key={key} style={{ marginBottom: "10px" }}>
+            <label htmlFor={`${dataIndex}-${key}`}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+            {renderEditableCell(
+              record,
+              [dataIndex, key],
+              key.charAt(0).toUpperCase() + key.slice(1),
+              "text",
+              isEditing(record),
+              false
+            )}
+          </div>
+        ))
+        )
+      ) : (
+        ["web", "mobi", "extension"].map((key) => (
+          <div key={key} style={{ marginBottom: "10px" }}>
+            <label htmlFor={`${dataIndex}-${key}`}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
+            {renderEditableCell(
+              record,
+              [dataIndex, key],
+              key.charAt(0).toUpperCase() + key.slice(1),
+              "text",
+              isEditing(record),
+              false
+            )}
+          </div>
+        ))
+      )}
+      
+      <div
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px", // Added 'right' property
+          }}
+        >
           <Switch
+            size="small"
+            style={{ marginLeft: "10px" }}
             checked={useSingleInput}
             onChange={toggleInputMode}
-            checkedChildren="Single Input"
-            unCheckedChildren="Three Inputs"
+            checkedChildren="Separate"
+            unCheckedChildren="Single"
           />
         </div>
-      );
-    }
-  } else {
+    </div>
+  );
+}
+else {
     if (allEqual) {
       return <div>{web}</div>;
     } else {

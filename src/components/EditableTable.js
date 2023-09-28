@@ -9,7 +9,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
-import RenderTranslatedCell from "./renderUtils";
+// import RenderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
 import {Render} from "./renderUtils"
@@ -160,14 +160,14 @@ const EditableTable = ({
         });
       });
 
-  const handleExport = () => {
-    const excel = new Excel();
-    excel
-      .addSheet("Sheet1")
-      .addColumns(mergedColumns)
-      .addDataSource(filteredData)
-      .saveAs("i18n.xlsx");
-  };
+  // const handleExport = () => {
+  //   const excel = new Excel();
+  //   excel
+  //     .addSheet("Sheet1")
+  //     .addColumns(mergedColumns)
+  //     .addDataSource(filteredData)
+  //     .saveAs("i18n.xlsx");
+  // };
 
   return (
     <>
@@ -195,7 +195,7 @@ const EditableTable = ({
           alignItems: "center",
         }}
       >
-        <Button
+        {/* <Button
           type="primary"
           size="small"
           style={{ marginLeft: "0.5cm" }}
@@ -203,7 +203,7 @@ const EditableTable = ({
           onClick={handleExport}
         >
           Export to Excel
-        </Button>
+        </Button> */}
 
         <div style={{ marginLeft: "2cm" }}>
           <Button

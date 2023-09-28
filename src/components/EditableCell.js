@@ -13,7 +13,6 @@ const EditableCell = ({
     ...restProps
   }) => {
     const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
-    console.log('input node',inputNode);
     return (
       <td {...restProps}>
         {editing ? (
@@ -24,8 +23,8 @@ const EditableCell = ({
             }}
             rules={[
               {
-                required: true,
-                message: `Please Input ${title}!`,
+                // required: true,
+                // message: `Please Input ${title}!`,
               },
             ]}
           >
