@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import EditableCell from "./EditableCell";
 import { Input, Switch } from "antd";
+import { useEditedSingleForm } from './EditedSingleFormContext';
 
 const renderEditableCell = (
   record,
@@ -20,7 +21,13 @@ const renderEditableCell = (
   />
 );
 
-export const Render = (record, dataIndex, isEditing, setData, data) => {
+export const Render = ({ record, dataIndex, isEditing, setData, data, updateParentData }) => {
+  console.log("record: ", record);
+  console.log("dataIndex", dataIndex);
+  console.log("isEditing: ", isEditing);
+  console.log("setData ", setData);
+  console.log("data ", data);
+
   return (
     <>
       {/* Other components */}
@@ -30,10 +37,26 @@ export const Render = (record, dataIndex, isEditing, setData, data) => {
         isEditing={isEditing}
         setData={setData}
         data={data}
+        updateParentData={updateParentData}
       />
     </>
   );
 };
+
+export const handleSave = (editedSingleForm, data, setData) => {
+  const updatedData = data.map((item) => {
+    const editedItem = editedSingleForm[item.key];
+    if (editedItem) {
+      return {
+        ...item,
+        ...editedItem,
+      };
+    }
+    return item;
+  });
+  setData(updatedData);
+};
+
 
 const RenderTranslatedCell = ({
   record,
@@ -41,81 +64,88 @@ const RenderTranslatedCell = ({
   isEditing,
   setData,
   data,
+  updateParentData
+  
 }) => {
   const { web, mobi, extension } = record[dataIndex];
-  console.log("record: ", record);
+
   const allEqual = web === mobi && mobi === extension;
 
-  const [useSingleInput, setUseSingleInput] = useState(false);
+  const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
+  const [singleInput, setSingleInput] = useState(false);
 
   const toggleInputMode = () => {
-    setUseSingleInput((prevMode) => !prevMode);
+    setSingleInput((prevMode) => !prevMode);
+    updateParentData(singleInput);
   };
+  console.log("singleInput", singleInput);
 
-if (isEditing(record)) {
-  return (
-    <div >
-      {useSingleInput ? (
-        allEqual ? (
-          <div style={{ marginBottom: "10px"}}>
-            <label htmlFor={`${dataIndex}-web`}>Web:</label>
+
+  // const handleSave = () => {
+  //   const updatedData = data.map((item) => {
+  //     const editedItem = editedSingleForm[item.key];
+  //     if (editedItem) {
+  //       return {
+  //         ...item,
+  //         ...editedItem,
+  //       };
+  //     }
+  //     return item;
+  //   });
+  //   setData(updatedData);
+  // };
+  
+
+  if (isEditing(record)) {
+    return (
+      <div>
+        {singleInput ? (
+          <div style={{ marginBottom: "10px" }}>
+            <label htmlFor={`${dataIndex}-web`}>All:</label>
             <Input
               id={`${dataIndex}-web`}
-              placeholder={record[dataIndex]["web"]}
-              value={record[dataIndex]["web"]}
+              placeholder={record[dataIndex].web}
+              value={
+                editedSingleForm[record.key]?.[dataIndex]?.web ||
+                record[dataIndex].web
+              }
               onChange={(e) => {
-                // Update all three fields: "web," "mobi," and "extension"
                 const updatedValue = e.target.value;
-                const updatedData = data.map((item) => {
-                  if (item.key === record.key) {
-                    return {
-                      ...item,
-                      [dataIndex]: {
-                        web: updatedValue,
-                        mobi: updatedValue,
-                        extension: updatedValue,
-                      },
-                    };
-                  }
-                  return item;
-                });
-                setData(updatedData);
+                const updatedEditedData = {
+                  ...editedSingleForm,
+                  [record.key]: {
+                    ...editedSingleForm[record.key],
+                    [dataIndex]: {
+                      ...editedSingleForm[record.key]?.[dataIndex],
+                      web: updatedValue,
+                      mobi: updatedValue,
+                      extension: updatedValue,
+                    },
+                  },
+                };
+                setEditedSingleForm(updatedEditedData);
               }}
             />
           </div>
         ) : (
-          
-        ["web"].map((key) => (
-          <div key={key} style={{ marginBottom: "10px" }}>
-            <label htmlFor={`${dataIndex}-${key}`}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-            {renderEditableCell(
-              record,
-              [dataIndex, key],
-              key.charAt(0).toUpperCase() + key.slice(1),
-              "text",
-              isEditing(record),
-              false
-            )}
-          </div>
-        ))
-        )
-      ) : (
-        ["web", "mobi", "extension"].map((key) => (
-          <div key={key} style={{ marginBottom: "10px" }}>
-            <label htmlFor={`${dataIndex}-${key}`}>{key.charAt(0).toUpperCase() + key.slice(1)}:</label>
-            {renderEditableCell(
-              record,
-              [dataIndex, key],
-              key.charAt(0).toUpperCase() + key.slice(1),
-              "text",
-              isEditing(record),
-              false
-            )}
-          </div>
-        ))
-      )}
-      
-      <div
+          ["web", "mobi", "extension"].map((key) => (
+            <div key={key} style={{ marginBottom: "10px" }}>
+              <label htmlFor={`${dataIndex}-${key}`}>
+                {key.charAt(0).toUpperCase() + key.slice(1)}:
+              </label>
+              {renderEditableCell(
+                record,
+                [dataIndex, key],
+                key.charAt(0).toUpperCase() + key.slice(1),
+                "text",
+                isEditing(record),
+                false
+              )}
+            </div>
+          ))
+        )}
+
+        <div
           style={{
             position: "absolute",
             top: "10px",
@@ -125,16 +155,16 @@ if (isEditing(record)) {
           <Switch
             size="small"
             style={{ marginLeft: "10px" }}
-            checked={useSingleInput}
+            checked={singleInput}
             onChange={toggleInputMode}
             checkedChildren="Separate"
             unCheckedChildren="Single"
           />
         </div>
-    </div>
-  );
-}
-else {
+
+      </div>
+    );
+  } else {
     if (allEqual) {
       return <div>{web}</div>;
     } else {

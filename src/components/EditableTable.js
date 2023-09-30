@@ -9,10 +9,11 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
-// import RenderTranslatedCell from "./renderUtils";
+import RenderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
-import {Render} from "./renderUtils"
+import { Render, handleSave } from "./renderUtils";
+import { useEditedSingleForm } from "./EditedSingleFormContext";
 
 const EditableTable = ({
   data,
@@ -21,10 +22,25 @@ const EditableTable = ({
   save,
   cancel,
   editingKey,
+  setEditingKey,
   form,
   setData, // Pass the setData function as a prop
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
+  // const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
+  const [parentData, setParentData] = useState(false)
+  const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
+  const onSaveButtonClick = () => {
+    // Call the handleSave function from renderUtils.js
+    console.log("editedSingleForm: ", editedSingleForm);
+    handleSave(editedSingleForm, data, setData);
+    setEditingKey("");
+  };
+  const updateParentData = (receive) => {
+    setParentData(receive);
+  };
+  console.log('parentData', parentData)
+
   const languages = [
     { title: "English", dataIndex: "en" },
     { title: "Vietnamese", dataIndex: "vi" },
@@ -62,8 +78,16 @@ const EditableTable = ({
       title: language.title,
       dataIndex: language.dataIndex,
       width: "14%",
-      render: (_, record) =>
-        Render(record, language.dataIndex, isEditing, setData, data),
+      render: (_, record) => (
+        <Render
+          record={record}
+          dataIndex={language.dataIndex}
+          isEditing={isEditing}
+          setData={setData}
+          data={data}
+          updateParentData={updateParentData}
+        />
+      ),
       filterDropdown: ({
         setSelectedKeys,
         selectedKeys,
@@ -101,7 +125,14 @@ const EditableTable = ({
         return editable ? (
           <span>
             <Button
-              onClick={() => save(record.key)}
+              // onClick={() => save(record.key)}
+              onClick={() => {
+                if (parentData) {
+                  save(record.key);
+                } else {
+                  onSaveButtonClick();
+                }
+              }}
               style={{ marginRight: 8 }}
               icon={<SaveOutlined />}
             >
