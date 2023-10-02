@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Table, Popconfirm, Button } from "antd";
+
 import {
   SearchOutlined,
   DownloadOutlined,
@@ -12,7 +13,7 @@ import FilterDropdown from "./FilterDropdown";
 import RenderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
-import { Render, handleSave } from "./renderUtils";
+import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
 
 const EditableTable = ({
@@ -20,26 +21,32 @@ const EditableTable = ({
   isEditing,
   edit,
   save,
+  handleSave,
   cancel,
   editingKey,
   setEditingKey,
   form,
   setData, // Pass the setData function as a prop
+  getRowClassName1, // Apply the class to edited rows
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   // const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-  const [parentData, setParentData] = useState(false)
+  console.log('data', data);
+  const [parentData, setParentData] = useState(false);
+
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-  const onSaveButtonClick = () => {
-    // Call the handleSave function from renderUtils.js
-    console.log("editedSingleForm: ", editedSingleForm);
-    handleSave(editedSingleForm, data, setData);
-    setEditingKey("");
-  };
+
+  // State to track edited rows
+  // const [editedRows, setEditedRows] = useState([]);
+
+  // const onSaveButtonClick = () => {
+  //   // Call the handleSave function from renderUtils.js
+  //   handleSave(editedSingleForm, data, setData);
+  //   setEditingKey("");
+  // };
   const updateParentData = (receive) => {
     setParentData(receive);
   };
-  console.log('parentData', parentData)
 
   const languages = [
     { title: "English", dataIndex: "en" },
@@ -66,6 +73,7 @@ const EditableTable = ({
           selectedKeys={selectedKeys}
           confirm={confirm}
           clearFilters={clearFilters}
+          dataIndex={"Key"}
         />
       ),
       filterIcon: (filtered) => (
@@ -86,6 +94,7 @@ const EditableTable = ({
           setData={setData}
           data={data}
           updateParentData={updateParentData}
+          setParentData={setParentData}
         />
       ),
       filterDropdown: ({
@@ -99,6 +108,7 @@ const EditableTable = ({
           selectedKeys={selectedKeys}
           confirm={confirm}
           clearFilters={clearFilters}
+          dataIndex={language.title}
         />
       ),
       filterIcon: (filtered) => (
@@ -125,12 +135,11 @@ const EditableTable = ({
         return editable ? (
           <span>
             <Button
-              // onClick={() => save(record.key)}
               onClick={() => {
                 if (parentData) {
                   save(record.key);
                 } else {
-                  onSaveButtonClick();
+                  handleSave(editedSingleForm,data,setData);
                 }
               }}
               style={{ marginRight: 8 }}
@@ -183,20 +192,35 @@ const EditableTable = ({
         return languages.some((language) => {
           const dataIndex = language.dataIndex;
           if (record[dataIndex]) {
-            return ["web", "mobi", "extension"].some(
-              (key) => record[dataIndex][key].trim() === ""
-            );
+            return ["web", "mobi", "extension"].some((key) => {
+              const value = record[dataIndex][key];
+              return value.trim() === "";
+            });
           }
           return false;
         });
       });
 
+  const flattenedData = filteredData.map((item) => {
+    return {
+      key: item.key,
+      en: item.en.web,
+      vi: item.vi.web,
+      zh: item.zh.web,
+      ja: item.ja.web,
+      es: item.es.web,
+      operation: item.operation,
+    };
+  });
+
   // const handleExport = () => {
+  //   console.log("Merged Columns:", mergedColumns);
+  //   console.log("flattenedData:", flattenedData);
   //   const excel = new Excel();
   //   excel
   //     .addSheet("Sheet1")
   //     .addColumns(mergedColumns)
-  //     .addDataSource(filteredData)
+  //     .addDataSource(flattenedData)
   //     .saveAs("i18n.xlsx");
   // };
 
@@ -212,7 +236,8 @@ const EditableTable = ({
           bordered
           dataSource={filteredData}
           columns={mergedColumns}
-          rowClassName="editable-row"
+         
+          rowClassName={getRowClassName1} // Apply the class to edited rows
           pagination={{
             pageSize: 5,
             showSizeChanger: false,

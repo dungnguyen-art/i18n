@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect} from "react";
 import EditableCell from "./EditableCell";
 import { Input, Switch } from "antd";
-import { useEditedSingleForm } from './EditedSingleFormContext';
+import { useEditedSingleForm } from "./EditedSingleFormContext";
+import { debounce } from "lodash";
 
 const renderEditableCell = (
   record,
@@ -21,13 +22,15 @@ const renderEditableCell = (
   />
 );
 
-export const Render = ({ record, dataIndex, isEditing, setData, data, updateParentData }) => {
-  console.log("record: ", record);
-  console.log("dataIndex", dataIndex);
-  console.log("isEditing: ", isEditing);
-  console.log("setData ", setData);
-  console.log("data ", data);
-
+export const Render = ({
+  record,
+  dataIndex,
+  isEditing,
+  setData,
+  data,
+  updateParentData,
+  setParentData
+}) => {
   return (
     <>
       {/* Other components */}
@@ -38,25 +41,28 @@ export const Render = ({ record, dataIndex, isEditing, setData, data, updatePare
         setData={setData}
         data={data}
         updateParentData={updateParentData}
+        setParentData={setParentData}
       />
     </>
   );
 };
 
-export const handleSave = (editedSingleForm, data, setData) => {
-  const updatedData = data.map((item) => {
-    const editedItem = editedSingleForm[item.key];
-    if (editedItem) {
-      return {
-        ...item,
-        ...editedItem,
-      };
-    }
-    return item;
-  });
-  setData(updatedData);
-};
+// export const handleSave = (editedSingleForm, data, setData) => {
+//   const updatedData = data.map((item) => {
+//     const editedItem = editedSingleForm[item.key];
+//     console.log('editedItem', editedItem);
 
+//     if (editedItem) {
+//       return {
+//         ...item,
+//         ...editedItem,
+//       };
+//     }
+//     return item;
+//   });
+//   console.log("data in renderUtils", data);
+//   setData(updatedData);
+// };
 
 const RenderTranslatedCell = ({
   record,
@@ -64,37 +70,20 @@ const RenderTranslatedCell = ({
   isEditing,
   setData,
   data,
-  updateParentData
-  
+  updateParentData,
+  setParentData
 }) => {
   const { web, mobi, extension } = record[dataIndex];
-
   const allEqual = web === mobi && mobi === extension;
-
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-  const [singleInput, setSingleInput] = useState(false);
-
+  const [singleInput, setSingleInput] = useState(allEqual);
+  useEffect(() => {
+    updateParentData(singleInput);
+  }, []);
   const toggleInputMode = () => {
     setSingleInput((prevMode) => !prevMode);
     updateParentData(singleInput);
   };
-  console.log("singleInput", singleInput);
-
-
-  // const handleSave = () => {
-  //   const updatedData = data.map((item) => {
-  //     const editedItem = editedSingleForm[item.key];
-  //     if (editedItem) {
-  //       return {
-  //         ...item,
-  //         ...editedItem,
-  //       };
-  //     }
-  //     return item;
-  //   });
-  //   setData(updatedData);
-  // };
-  
 
   if (isEditing(record)) {
     return (
@@ -102,6 +91,7 @@ const RenderTranslatedCell = ({
         {singleInput ? (
           <div style={{ marginBottom: "10px" }}>
             <label htmlFor={`${dataIndex}-web`}>All:</label>
+            <br></br>
             <Input
               id={`${dataIndex}-web`}
               placeholder={record[dataIndex].web}
@@ -125,6 +115,7 @@ const RenderTranslatedCell = ({
                 };
                 setEditedSingleForm(updatedEditedData);
               }}
+              style={{ width: "86.3%" }}
             />
           </div>
         ) : (
@@ -149,7 +140,7 @@ const RenderTranslatedCell = ({
           style={{
             position: "absolute",
             top: "10px",
-            right: "10px", // Added 'right' property
+            right: "10px",
           }}
         >
           <Switch
@@ -157,11 +148,10 @@ const RenderTranslatedCell = ({
             style={{ marginLeft: "10px" }}
             checked={singleInput}
             onChange={toggleInputMode}
-            checkedChildren="Separate"
-            unCheckedChildren="Single"
+            checkedChildren="Single"
+            unCheckedChildren="Separate"
           />
         </div>
-
       </div>
     );
   } else {

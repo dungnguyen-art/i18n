@@ -32,6 +32,10 @@
   top: 100%;
   font-size: 12px;
 }
+.edited-row {
+  background-color: yellow; /* Change this to your desired color */
+}
+
 
 @keyframes App-logo-spin {
   from {

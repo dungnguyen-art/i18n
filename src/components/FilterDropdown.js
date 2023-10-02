@@ -1,41 +1,55 @@
 // components/FilterDropdown.js
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Input, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
-const FilterDropdown = ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => {
-  const [searchValue, setSearchValue] = useState(selectedKeys[0]);
+const FilterDropdown = ({
+  setSelectedKeys,
+  selectedKeys,
+  confirm,
+  clearFilters,
+  dataIndex,
+}) => {
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
 
-  const handleSearch = (event) => {
-    console.log(event.target);
+  const handleSearch = (selectedKeys, dataIndex) => {
     confirm();
-    setSelectedKeys(searchValue ? [searchValue] : []);
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
   };
 
   const handleReset = () => {
     clearFilters();
-    setSearchValue("");
-    setSelectedKeys([]);
+    setSearchText("");
   };
 
   return (
     <div style={{ padding: 8 }}>
       <Input
-        placeholder="Search Key"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onPressEnter={handleSearch}
-        style={{ width: 188, marginBottom: 8, display: "block" }}
+        ref={searchInput}
+        placeholder={`Search ${dataIndex}`}
+        value={selectedKeys[0]}
+        onChange={(e) =>
+          setSelectedKeys(e.target.value ? [e.target.value] : [])
+        }
+        onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+        style={{
+          marginBottom: 8,
+          display: "block",
+        }}
       />
       <Button
         type="primary"
-        onClick={ e => handleSearch(e)}
+        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+        icon={<SearchOutlined />}
         size="small"
-        style={{ width: 90, marginRight: 8 }}
+        style={{
+          width: 90,
+        }}
       >
-        {<SearchOutlined onClick={e => handleSearch(e)}/>}
-        <span onClick={ e => handleSearch(e)}>Search</span>
-        
+        Search
       </Button>
       <Button onClick={handleReset} size="small" style={{ width: 90 }}>
         Reset

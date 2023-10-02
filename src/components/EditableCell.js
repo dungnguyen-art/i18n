@@ -20,6 +20,7 @@ const EditableCell = ({
             name={dataIndex}
             style={{
               margin: 0,
+              width:"100%"
             }}
             rules={[
               {
