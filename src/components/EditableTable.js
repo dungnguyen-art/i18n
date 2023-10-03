@@ -21,7 +21,6 @@ const EditableTable = ({
   isEditing,
   edit,
   save,
-  handleSave,
   cancel,
   editingKey,
   setEditingKey,
@@ -31,19 +30,10 @@ const EditableTable = ({
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   // const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-  console.log('data', data);
-  const [parentData, setParentData] = useState(false);
+  // console.log('data', data);
+  const [parentData, setParentData] = useState(true);
 
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-
-  // State to track edited rows
-  // const [editedRows, setEditedRows] = useState([]);
-
-  // const onSaveButtonClick = () => {
-  //   // Call the handleSave function from renderUtils.js
-  //   handleSave(editedSingleForm, data, setData);
-  //   setEditingKey("");
-  // };
   const updateParentData = (receive) => {
     setParentData(receive);
   };
@@ -136,10 +126,10 @@ const EditableTable = ({
           <span>
             <Button
               onClick={() => {
-                if (parentData) {
-                  save(record.key);
+                if (true) {
+                  save(editedSingleForm,data,setData, record.key, parentData);
                 } else {
-                  handleSave(editedSingleForm,data,setData);
+                  save(record.key);
                 }
               }}
               style={{ marginRight: 8 }}
@@ -223,6 +213,7 @@ const EditableTable = ({
   //     .addDataSource(flattenedData)
   //     .saveAs("i18n.xlsx");
   // };
+  console.log('parent:', parentData);
 
   return (
     <>

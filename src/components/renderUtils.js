@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import EditableCell from "./EditableCell";
 import { Input, Switch } from "antd";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
@@ -29,7 +29,7 @@ export const Render = ({
   setData,
   data,
   updateParentData,
-  setParentData
+  setParentData,
 }) => {
   return (
     <>
@@ -71,7 +71,7 @@ const RenderTranslatedCell = ({
   setData,
   data,
   updateParentData,
-  setParentData
+  setParentData,
 }) => {
   const { web, mobi, extension } = record[dataIndex];
   const allEqual = web === mobi && mobi === extension;
@@ -79,13 +79,15 @@ const RenderTranslatedCell = ({
   const [singleInput, setSingleInput] = useState(allEqual);
   useEffect(() => {
     updateParentData(singleInput);
-  }, []);
+  }, [singleInput]);
+
   const toggleInputMode = () => {
     setSingleInput((prevMode) => !prevMode);
-    updateParentData(singleInput);
+    // updateParentData(singleInput);
   };
 
   if (isEditing(record)) {
+    console.log("singleInput", singleInput);
     return (
       <div>
         {singleInput ? (
@@ -113,7 +115,9 @@ const RenderTranslatedCell = ({
                     },
                   },
                 };
+                console.log("Before update:", editedSingleForm);
                 setEditedSingleForm(updatedEditedData);
+                console.log("After update:", editedSingleForm);
               }}
               style={{ width: "86.3%" }}
             />
