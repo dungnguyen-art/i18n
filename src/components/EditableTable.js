@@ -15,7 +15,6 @@ import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
-import useFetch from "./useFetch";
 
 const EditableTable = ({
   data,
@@ -31,9 +30,7 @@ const EditableTable = ({
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   const [parentData, setParentData] = useState(true);
-
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
 
@@ -194,18 +191,6 @@ const EditableTable = ({
         });
       });
 
-  const flattenedData = filteredData.map((item) => {
-    return {
-      key: item.key,
-      en: item.en.web,
-      vi: item.vi.web,
-      zh: item.zh.web,
-      ja: item.ja.web,
-      es: item.es.web,
-      operation: item.operation,
-    };
-  });
-
   // Calculate the start and end indices for displaying data
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, filteredData.length);
@@ -216,69 +201,7 @@ const EditableTable = ({
     setCurrentPage(page);
     setPageSize(size);
   };
-
-  // const handleExport = () => {
-  //   console.log("Merged Columns:", mergedColumns);
-  //   console.log("flattenedData:", flattenedData);
-  //   const excel = new Excel();
-  //   excel
-  //     .addSheet("Sheet1")
-  //     .addColumns(mergedColumns)
-  //     .addDataSource(flattenedData)
-  //     .saveAs("i18n.xlsx");
-  // };
-  // console.log("parent:", parentData);
-
-  // console.log("displayedData", displayedData);
-  const {loading, error, dataStrapi} = useFetch('http://localhost:1338/api/i18ns/')
-  if(loading) return <p>Loading...</p>
-  if(error) return <p>Error ....</p>
-  console.log('dataStrapi', dataStrapi);
-
-  // const dataStrapi = {
-  //   // Your dataStrapi object here...
-  // };
   
-  // Initialize an empty array to store the transformed data
-  const displayData = [];
-  
-  // Loop through the 'data' array in dataStrapi
-  dataStrapi.data.forEach((item) => {
-    const displayItem = {
-      key: item.attributes.key,
-      en: {
-        web: item.attributes.en.web,
-        mobi: item.attributes.en.mobi,
-        extension: item.attributes.en.extension,
-      },
-      vi: {
-        web: item.attributes.vi.web,
-        mobi: item.attributes.vi.mobi,
-        extension: item.attributes.vi.extension,
-      },
-      zh: {
-        web: item.attributes.zh.web,
-        mobi: item.attributes.zh.mobi,
-        extension: item.attributes.zh.extension,
-      },
-      ja: {
-        web: item.attributes.ja.web,
-        mobi: item.attributes.ja.mobi,
-        extension: item.attributes.ja.extension,
-      },
-      es: {
-        web: item.attributes.es.web,
-        mobi: item.attributes.es.mobi,
-        extension: item.attributes.es.extension,
-      },
-    };
-  
-    // Push the transformed item into the displayData array
-    displayData.push(displayItem);
-  });
-  
-  // displayData now contains the transformed data in the desired format
-  console.log("displayData",displayData);
   return (
     <>
       <Form form={form} component={false}>
@@ -289,16 +212,10 @@ const EditableTable = ({
             },
           }}
           bordered
-          dataSource={displayData}
+          dataSource={displayedData}
           columns={mergedColumns}
           rowClassName={getRowClassName1} // Apply the class to edited rows
           pagination={false}
-          // pagination={{
-          //   pageSize: 5,
-          //   showSizeChanger: false,
-          //   pageSizeOptions: ["5", "10", "20"],
-          //   onChange: cancel,
-          // }}
         />
         <br></br>
         <Pagination
@@ -321,15 +238,6 @@ const EditableTable = ({
           alignItems: "center",
         }}
       >
-        {/* <Button
-          type="primary"
-          size="small"
-          style={{ marginLeft: "0.5cm" }}
-          icon={<DownloadOutlined />}
-          onClick={handleExport}
-        >
-          Export to Excel
-        </Button> */}
 
         <div style={{ marginLeft: "2cm" }}>
           <Button
