@@ -1,82 +1,144 @@
 {
-    "common": {
-      "create": {
-        "en": "",
-        "vi": "Tạo",
-        "zh": "创建",
-        "ja": "作成",
-        "es": "Crear"
-      },
-      "edit": {
-        "en": "Edit",
-        "vi": "Chỉnh sửa",
-        "zh": "编辑",
-        "ja": "編集",
-        "es": "Editar" 
-      },
-      "save": {
-        "en": "Save",
-        "vi": "Lưu",
-        "zh": "保存",
-        "ja": "保存",
-        "es": "Guardar"
-      },
-      "cancel": {
-        "en": "Cancel",
-        "vi": "Hủy bỏ",
-        "zh": "取消abc",
-        "ja": "キャンセル",
-        "es": "Cancelar" 
-      },
-      "delete": {
-        "en": "Delete",
-        "vi": "Xóa",
-        "zh": "删除",
-        "ja": "削除",
-        "es": "Eliminar"
-      },
-      "submit": {
-        "en": "Submit",
-        "vi": "Gửi",
-        "zh": "提交",
-        "ja": "提出",
-        "es": "Enviar"
-      },
-      "close": {
-        "en": "Close",
-        "vi": "Đóng",
-        "zh": "关闭",
-        "ja": "閉じる",
-        "es": "Cerrar"
-      },
-      "confirm": {
-        "en": "Confirm",
-        "vi": "Xác nhận",
-        "zh": "确认",
-        "ja": "確認",
-        "es": "Confirmar"
-      },
-      "back": {
-        "en": "Back",
-        "vi": "Quay lại",
-        "zh": "返回",
-        "ja": "戻る",
-        "es": "Volver" 
-      },
-      "error": {
-        "en": "Error",
-        "vi": "Lỗi",
-        "zh": "错误",
-        "ja": "エラー",
-        "es": "Error"
-      },
-      "success": {
-        "en": "Success",
-        "vi": "Thành công",
-        "zh": "成功",
-        "ja": "成功",
-        "es": "Éxito"
-      }
+  "common": {
+    "create": {
+      "en": "Generate",
+      "vi": "Tạo",
+      "zh": "创建",
+      "ja": "作成",
+      "es": "Generar"
+    },
+    "edit": {
+      "en": "Alter",
+      "vi": "Chỉnh sửa",
+      "zh": "编辑",
+      "ja": "編集",
+      "es": "Editar" 
+    },
+    "save": {
+      "en": "Deliver",
+      "vi": "Ok",
+      "zh": "保存",
+      "ja": "保存",
+      "es": "Guardar"
+    },
+    "cancel": {
+      "en": "Abolish",
+      "vi": "Hủy bỏ",
+      "zh": "取消",
+      "ja": "キャンセル",
+      "es": "Cancelar" 
+    },
+    "delete": {
+      "en": "Delete",
+      "vi": "Xóa",
+      "zh": "删除",
+      "ja": "削除",
+      "es": "Eliminar"
+    },
+    "submit": {
+      "en": "Submit",
+      "vi": "Gửi",
+      "zh": "提交",
+      "ja": "提出",
+      "es": "Enviar"
+    },
+    "close": {
+      "en": "Close",
+      "vi": "Đóng",
+      "zh": "关闭",
+      "ja": "閉じる",
+      "es": "Cerrar"
+    },
+    "confirm": {
+      "en": "Confirm",
+      "vi": "Xác nhận",
+      "zh": "确认",
+      "ja": "確認",
+      "es": "Confirmar"
+    },
+    "back": {
+      "en": "Back",
+      "vi": "Quay lại",
+      "zh": "返回",
+      "ja": "戻る",
+      "es": "Volver" 
+    },
+    "error": {
+      "en": "Error",
+      "vi": "Lỗi",
+      "zh": "错误",
+      "ja": "エラー",
+      "es": "Error"
+    },
+    "success": {
+      "en": "Success",
+      "vi": "Thành công",
+      "zh": "成功",
+      "ja": "成功",
+      "es": "Éxito"
+    },
+    "next": {
+      "en": "Next",
+      "vi": "Tiếp theo",
+      "zh": "下一个",
+      "ja": "次へ",
+      "es": "Siguiente"
+    },
+    "previous": {
+      "en": "Previous",
+      "vi": "Trước",
+      "zh": "上一个",
+      "ja": "前へ",
+      "es": "Anterior"
+    },
+    "refresh": {
+      "en": "Refresh",
+      "vi": "Làm mới",
+      "zh": "刷新",
+      "ja": "更新",
+      "es": "Actualizar"
+    },
+    "search": {
+      "en": "Search",
+      "vi": "Tìm kiếm",
+      "zh": "搜索",
+      "ja": "検索",
+      "es": "Buscar"
+    },
+    "navigate": {
+      "en": "Navigate",
+      "vi": "Điều hướng",
+      "zh": "导航",
+      "ja": "ナビゲート",
+      "es": "Navegar"
+    },
+    "play": {
+      "en": "Play",
+      "vi": "Chơi",
+      "zh": "播放",
+      "ja": "再生",
+      "es": "Reproducir"
+    },
+    "stop": {
+      "en": "Stop",
+      "vi": "Dừng lại",
+      "zh": "停止",
+      "ja": "停止",
+      "es": "Detener"
+    },
+    "pause": {
+      "en": "Pause",
+      "vi": "Tạm dừng",
+      "zh": "暂停",
+      "ja": "一時停止",
+      "es": "Pausa"
+    },
+    "resume": {
+      "en": "Resume",
+      "vi": "Tiếp tục",
+      "zh": "恢复",
+      "ja": "再開",
+      "es": "Reanudar"
     }
   }
-  
+}

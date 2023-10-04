@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Table, Popconfirm, Button } from "antd";
+import { Form, Table, Popconfirm, Button, Pagination } from "antd";
 
 import {
   SearchOutlined,
@@ -15,6 +15,7 @@ import EditableCell from "./EditableCell";
 import { Excel } from "antd-table-saveas-excel";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
+import useFetch from "./useFetch";
 
 const EditableTable = ({
   data,
@@ -29,11 +30,13 @@ const EditableTable = ({
   getRowClassName1, // Apply the class to edited rows
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
-  // const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
-  // console.log('data', data);
   const [parentData, setParentData] = useState(true);
 
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
   const updateParentData = (receive) => {
     setParentData(receive);
   };
@@ -127,7 +130,7 @@ const EditableTable = ({
             <Button
               onClick={() => {
                 if (true) {
-                  save(editedSingleForm,data,setData, record.key, parentData);
+                  save(editedSingleForm, data, setData, record.key, parentData);
                 } else {
                   save(record.key);
                 }
@@ -203,6 +206,17 @@ const EditableTable = ({
     };
   });
 
+  // Calculate the start and end indices for displaying data
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredData.length);
+  const displayedData = filteredData.slice(startIndex, endIndex);
+
+  const handlePageChange = (page, size) => {
+    // Update the current page and page size state variables
+    setCurrentPage(page);
+    setPageSize(size);
+  };
+
   // const handleExport = () => {
   //   console.log("Merged Columns:", mergedColumns);
   //   console.log("flattenedData:", flattenedData);
@@ -213,8 +227,58 @@ const EditableTable = ({
   //     .addDataSource(flattenedData)
   //     .saveAs("i18n.xlsx");
   // };
-  console.log('parent:', parentData);
+  // console.log("parent:", parentData);
 
+  // console.log("displayedData", displayedData);
+  const {loading, error, dataStrapi} = useFetch('http://localhost:1338/api/i18ns/')
+  if(loading) return <p>Loading...</p>
+  if(error) return <p>Error ....</p>
+  console.log('dataStrapi', dataStrapi);
+
+  // const dataStrapi = {
+  //   // Your dataStrapi object here...
+  // };
+  
+  // Initialize an empty array to store the transformed data
+  const displayData = [];
+  
+  // Loop through the 'data' array in dataStrapi
+  dataStrapi.data.forEach((item) => {
+    const displayItem = {
+      key: item.attributes.key,
+      en: {
+        web: item.attributes.en.web,
+        mobi: item.attributes.en.mobi,
+        extension: item.attributes.en.extension,
+      },
+      vi: {
+        web: item.attributes.vi.web,
+        mobi: item.attributes.vi.mobi,
+        extension: item.attributes.vi.extension,
+      },
+      zh: {
+        web: item.attributes.zh.web,
+        mobi: item.attributes.zh.mobi,
+        extension: item.attributes.zh.extension,
+      },
+      ja: {
+        web: item.attributes.ja.web,
+        mobi: item.attributes.ja.mobi,
+        extension: item.attributes.ja.extension,
+      },
+      es: {
+        web: item.attributes.es.web,
+        mobi: item.attributes.es.mobi,
+        extension: item.attributes.es.extension,
+      },
+    };
+  
+    // Push the transformed item into the displayData array
+    displayData.push(displayItem);
+  });
+  
+  // displayData now contains the transformed data in the desired format
+  console.log("displayData",displayData);
   return (
     <>
       <Form form={form} component={false}>
@@ -225,17 +289,32 @@ const EditableTable = ({
             },
           }}
           bordered
-          dataSource={filteredData}
+          dataSource={displayData}
           columns={mergedColumns}
-         
           rowClassName={getRowClassName1} // Apply the class to edited rows
-          pagination={{
-            pageSize: 5,
-            showSizeChanger: false,
-            onChange: cancel,
-          }}
+          pagination={false}
+          // pagination={{
+          //   pageSize: 5,
+          //   showSizeChanger: false,
+          //   pageSizeOptions: ["5", "10", "20"],
+          //   onChange: cancel,
+          // }}
+        />
+        <br></br>
+        <Pagination
+          showSizeChanger
+          onChange={handlePageChange}
+          total={filteredData.length} // Pass the total number of items in your data source
+          showTotal={(total, range) =>
+            `${range[0]}-${range[1]} of ${total} items`
+          }
+          pageSizeOptions={[5, 10, 100, 500]}
+          current={currentPage}
+          pageSize={pageSize}
+          style={{ float: "right" }}
         />
       </Form>
+      <br></br>
       <div
         style={{
           display: "flex",
