@@ -4,7 +4,6 @@ import mergedData from "./MergeData";
 import EditableTable from "./components/EditableTable"; // Import the EditableTable component
 import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
-import useFetch from "./components/useFetch";
 
 const App = () => {
   // State management

@@ -10,9 +10,7 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
-import RenderTranslatedCell from "./renderUtils";
 import EditableCell from "./EditableCell";
-import { Excel } from "antd-table-saveas-excel";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
 
