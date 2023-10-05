@@ -87,7 +87,6 @@ const RenderTranslatedCell = ({
   };
 
   if (isEditing(record)) {
-    console.log("singleInput", singleInput);
     return (
       <div>
         {singleInput ? (
@@ -115,9 +114,7 @@ const RenderTranslatedCell = ({
                     },
                   },
                 };
-                console.log("Before update:", editedSingleForm);
                 setEditedSingleForm(updatedEditedData);
-                console.log("After update:", editedSingleForm);
               }}
               style={{ width: "86.3%" }}
             />
