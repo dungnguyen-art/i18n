@@ -103,22 +103,21 @@ const App = () => {
   //       );
   //       if (isEdited) {
   //         item.isEdited = true;
-  //         setEditedRows([...editedRows, item.key]); 
+  //         setEditedRows([...editedRows, item.key]);
   //       }
-  
+
   //       return {
   //         ...item,
   //         ...editedItem,
   //       };
   //     }
-  
+
   //     return item;
   //   });
   //   console.log("newData in renderUtils", newData);
   //   setData(newData);
   //   setEditingKey("");
   // };
-
 
   const handleSave = async (
     editedSingleForm,
@@ -129,13 +128,13 @@ const App = () => {
   ) => {
     try {
       console.log(`handleSave called! -> parentData==${isParentData}`);
-      console.log('data', data);
+      console.log("data", data);
       const row = await form.validateFields();
       console.log("row", row);
-  
+
       // Find the previous data for the edited row
       const previousData = data.find((item) => item.key === key);
-  
+
       function areAllValuesEqual(row, previousData) {
         for (const language in row) {
           if (
@@ -151,64 +150,63 @@ const App = () => {
         }
         return true;
       }
-  
+
       // Check if all values in "row" are equal to "previousData"
       const result = areAllValuesEqual(row, previousData);
-  
+
       if (!result) {
         // Data has changed, update the edited row's isEdited flag
         previousData.isEdited = true;
         // Add the edited row's key to the editedRows state
         setEditedRows([...editedRows, key]);
       }
-  
+
       const newData = data.map((item) => {
         if (item.key === key) {
           return { ...item, ...row };
         }
         return item;
       });
-  
-      if (isParentData) {
-        const updatedData = newData.map((item) => {
-          const editedItem = editedSingleForm[item.key];
-          console.log("editedItem", editedItem);
-  
-          if (editedItem) {
-            const isEdited = Object.keys(editedItem).some((language) =>
-              ["web", "mobi", "extension"].some(
-                (property) =>
-                  editedItem[language] &&
-                  editedItem[language][property] !== item[language][property]
-              )
-            );
-  
-            if (isEdited) {
-              item.isEdited = true;
-              setEditedRows([...editedRows, item.key]);
-            }
-  
-            return {
-              ...item,
-              ...editedItem,
-            };
+      console.log("newData", newData);
+      // if (isParentData) {
+      const updatedData = newData.map((item) => {
+        const editedItem = editedSingleForm[item.key];
+        console.log("editedItem", editedItem);
+
+        if (editedItem) {
+          const isEdited = Object.keys(editedItem).some((language) =>
+            ["web", "mobi", "extension"].some(
+              (property) =>
+                editedItem[language] &&
+                editedItem[language][property] !== item[language][property]
+            )
+          );
+
+          if (isEdited) {
+            item.isEdited = true;
+            setEditedRows([...editedRows, item.key]);
           }
-  
-          return item;
-        });
-  
-        console.log("newData in renderUtils", updatedData);
-        setData(updatedData);
-      } else {
-        setData(newData);
-      }
-  
+
+          return {
+            ...item,
+            ...editedItem,
+          };
+        }
+
+        return item;
+      });
+      console.log("updatedData", updatedData);
+      setData(updatedData);
+      // } else {
+      // setData(newData);
+      // }
+
       setEditingKey("");
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
     }
   };
-  
+
   const getRowClassName = (record) => {
     return editedRows.includes(record.key) ? "edited-row" : "";
   };
@@ -230,5 +228,4 @@ const App = () => {
     </EditedSingleFormProvider>
   );
 };
-
 export default App;
