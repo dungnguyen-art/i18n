@@ -157,6 +157,60 @@ const App = () => {
       // } else {
       // setData(newData);
       // }
+      // PUT method: Send a PUT request to update the data in Strapi
+      const updatedDataStrapi = updatedData.map((item) => {
+        const languages = Object.keys(item).filter(
+          (key) => key !== "id" && key !== "key" && key !== "isEdited"
+        );
+        const data = {
+          key: item.key,
+        };
+
+        languages.forEach((language) => {
+          data[language] = {
+            web: item[language].web,
+            mobi: item[language].mobi,
+            extension: item[language].extension,
+          };
+        });
+
+        return {
+          id: item.id,
+          data: data,
+        };
+      });
+
+      const putDataToStrapi = async (updatedDataStrapi) => {
+        try {
+          for (const id in updatedDataStrapi) {
+            if (updatedDataStrapi.hasOwnProperty(id)) {
+              const dataToUpdate = updatedDataStrapi[id];
+
+              const idx = dataToUpdate.id;
+              delete dataToUpdate.id;
+              const response = await fetch(
+                `http://localhost:1338/api/i18ns/${idx}`, // Make sure to use the correct URL
+                {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json", // Set the content type to JSON
+                  },
+                  body: JSON.stringify(dataToUpdate), // Convert data to JSON string
+                }
+              );
+
+              if (response.ok) {
+                console.log(`Data with ID ${idx} updated in Strapi`);
+              } else {
+                console.error(`Failed to update data with ID ${idx} in Strapi`);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      putDataToStrapi(updatedDataStrapi);
 
       setEditingKey("");
     } catch (errInfo) {
