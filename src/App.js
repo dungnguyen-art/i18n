@@ -84,7 +84,10 @@ const App = () => {
     isParentData = false
   ) => {
     try {
+      console.log(`handleSave called! -> parentData==${isParentData}`);
+      console.log("data", data);
       const row = await form.validateFields();
+      console.log("row", row);
 
       // Find the previous data for the edited row
       const previousData = data.find((item) => item.key === key);
@@ -121,99 +124,46 @@ const App = () => {
         }
         return item;
       });
-      console.log("isParentData", isParentData);
-      if (isParentData) {
-        const updatedData = newData.map((item) => {
-          const editedItem = editedSingleForm[item.key];
+      console.log("newData", newData);
+      // if (isParentData) {
+      const updatedData = newData.map((item) => {
+        const editedItem = editedSingleForm[item.key];
+        console.log("editedItem", editedItem);
 
-          if (editedItem) {
-            const isEdited = Object.keys(editedItem).some((language) =>
-              ["web", "mobi", "extension"].some(
-                (property) =>
-                  editedItem[language] &&
-                  editedItem[language][property] !== item[language][property]
-              )
-            );
-
-            if (isEdited) {
-              item.isEdited = true;
-              setEditedRows([...editedRows, item.key]);
-            }
-
-            return {
-              ...item,
-              ...editedItem,
-            };
-          }
-
-          return item;
-        });
-
-        setData(updatedData);
-        // PUT method: Send a PUT request to update the data in Strapi
-        const updatedDataStrapi = updatedData.map((item) => {
-          const languages = Object.keys(item).filter(
-            (key) => key !== "id" && key !== "key" && key !== "isEdited"
+        if (editedItem) {
+          const isEdited = Object.keys(editedItem).some((language) =>
+            ["web", "mobi", "extension"].some(
+              (property) =>
+                editedItem[language] &&
+                editedItem[language][property] !== item[language][property]
+            )
           );
-          const data = {
-            key: item.key,
-          };
 
-          languages.forEach((language) => {
-            data[language] = {
-              web: item[language].web,
-              mobi: item[language].mobi,
-              extension: item[language].extension,
-            };
-          });
+          if (isEdited) {
+            item.isEdited = true;
+            setEditedRows([...editedRows, item.key]);
+          }
 
           return {
-            id: item.id,
-            data: data,
+            ...item,
+            ...editedItem,
           };
-        });
+        }
 
-        const putDataToStrapi = async (updatedDataStrapi) => {
-          try {
-            for (const id in updatedDataStrapi) {
-              if (updatedDataStrapi.hasOwnProperty(id)) {
-                const dataToUpdate = updatedDataStrapi[id];
+        return item;
+      });
+      console.log("updatedData", updatedData);
+      setData(updatedData);
+      // } else {
+      // setData(newData);
+      // }
 
-                const idx = dataToUpdate.id;
-                delete dataToUpdate.id;
-                const response = await fetch(
-                  `http://localhost:1338/api/i18ns/${idx}`, // Make sure to use the correct URL
-                  {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "application/json", // Set the content type to JSON
-                    },
-                    body: JSON.stringify(dataToUpdate), // Convert data to JSON string
-                  }
-                );
-
-                if (response.ok) {
-                  console.log(`Data with ID ${idx} updated in Strapi`);
-                } else {
-                  console.error(
-                    `Failed to update data with ID ${idx} in Strapi`
-                  );
-                }
-              }
-            }
-          } catch (error) {
-            console.error("Error:", error);
-          }
-        };
-        putDataToStrapi(updatedDataStrapi);
-      } else {
-        setData(newData);
-      }
       setEditingKey("");
     } catch (errInfo) {
       console.log("Validate Failed:", errInfo);
     }
   };
+
   const getRowClassName = (record) => {
     return editedRows.includes(record.key) ? "edited-row" : "";
   };
@@ -235,5 +185,4 @@ const App = () => {
     </EditedSingleFormProvider>
   );
 };
-
 export default App;
