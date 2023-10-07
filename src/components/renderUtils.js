@@ -47,23 +47,6 @@ export const Render = ({
   );
 };
 
-// export const handleSave = (editedSingleForm, data, setData) => {
-//   const updatedData = data.map((item) => {
-//     const editedItem = editedSingleForm[item.key];
-//     console.log('editedItem', editedItem);
-
-//     if (editedItem) {
-//       return {
-//         ...item,
-//         ...editedItem,
-//       };
-//     }
-//     return item;
-//   });
-//   console.log("data in renderUtils", data);
-//   setData(updatedData);
-// };
-
 const RenderTranslatedCell = ({
   record,
   dataIndex,

@@ -1,6 +1,9 @@
 import dataWeb from "./json/web.json";
 import dataMobi from "./json/mobi.json";
 import dataExtension from "./json/extension.json";
+import combinedMobi from "./crawl/mobile/combine";
+import combinedWeb from "./crawl/web/combine";
+import combinedExtension from "./crawl/extension/combine";
 
 // Define the languages you want to merge
 const languages = ["en", "vi", "zh", "ja", "es"];

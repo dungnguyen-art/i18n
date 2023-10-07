@@ -4,8 +4,7 @@
       "en": {
         "web": "create",
         "mobi": "create",
-        "extension": "create",
-        "__combine__": true
+        "extension": "create"
       },
       "vi": {
         "web": "Tạo",
@@ -163,5 +162,8 @@
         "extension": "Enviar"
       }
     }
+  },
+  "title": {
+
   }
 }

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
-import { Form, Table, Popconfirm, Button, Pagination } from "antd";
-
+import {
+  Form,
+  Table,
+  Popconfirm,
+  Button,
+  Pagination,
+  Layout,
+  Space,
+} from "antd";
 import {
   SearchOutlined,
   DownloadOutlined,
@@ -31,7 +38,6 @@ const EditableTable = ({
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-
   const updateParentData = (receive) => {
     setParentData(receive);
   };
@@ -189,6 +195,8 @@ const EditableTable = ({
         });
       });
 
+  console.log("filteredData", filteredData);
+
   // Calculate the start and end indices for displaying data
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, filteredData.length);
@@ -199,7 +207,7 @@ const EditableTable = ({
     setCurrentPage(page);
     setPageSize(size);
   };
-  
+
   return (
     <>
       <Form form={form} component={false}>
@@ -214,7 +222,9 @@ const EditableTable = ({
           columns={mergedColumns}
           rowClassName={getRowClassName1} // Apply the class to edited rows
           pagination={false}
+          scroll={{y:800}}
         />
+       
         <br></br>
         <Pagination
           showSizeChanger
@@ -236,7 +246,6 @@ const EditableTable = ({
           alignItems: "center",
         }}
       >
-
         <div style={{ marginLeft: "2cm" }}>
           <Button
             type="primary"
