@@ -7,6 +7,9 @@ import {
   Pagination,
   Layout,
   Space,
+  Menu,
+  Breadcrumb,
+  theme,
 } from "antd";
 import {
   SearchOutlined,
@@ -15,11 +18,18 @@ import {
   EditOutlined,
   SaveOutlined,
   DeleteOutlined,
+  HomeOutlined,
+  DashboardOutlined,
+  UnorderedListOutlined,
+  ProfileOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
 import EditableCell from "./EditableCell";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
+import { Route, Routes, useNavigate, userNavigate } from "react-router-dom";
+const { Header, Content, Footer } = Layout;
 
 const EditableTable = ({
   data,
@@ -208,57 +218,250 @@ const EditableTable = ({
     setPageSize(size);
   };
 
+  // return (
+  //   <>
+  //     <Header />
+  //     <div style={{ display: "flex", flexDirection: "row", flex: 1 }}>
+  //       <SideMenu />
+  //       <Content />
+  //       <Form
+  //         form={form}
+  //         component={false}
+  //         style={{ backgroundColor: "#f79e94" }}
+  //       >
+  //         <Table
+  //           components={{
+  //             body: {
+  //               cell: EditableCell,
+  //             },
+  //           }}
+  //           bordered
+  //           dataSource={displayedData}
+  //           columns={mergedColumns}
+  //           rowClassName={getRowClassName1} // Apply the class to edited rows
+  //           pagination={false}
+  //           scroll={{ y: 800 }}
+  //         />
+  //         <br></br>
+  //       </Form>
+  //     </div>
+
+  //     <Pagination
+  //       showSizeChanger
+  //       onChange={handlePageChange}
+  //       total={filteredData.length} // Pass the total number of items in your data source
+  //       showTotal={(total, range) =>
+  //         `${range[0]}-${range[1]} of ${total} items`
+  //       }
+  //       pageSizeOptions={[5, 10, 100, 500]}
+  //       current={currentPage}
+  //       pageSize={pageSize}
+  //       style={{ float: "right" }}
+  //     />
+  //     <br />
+  //     <br />
+  //     <Footer />
+  //     {/* <div
+  //       style={{
+  //         display: "flex",
+  //         alignItems: "center",
+  //       }}
+  //     > */}
+  //     {/* <div style={{ marginLeft: "2cm" }}>
+  //         <Button
+  //           type="primary"
+  //           size="small"
+  //           icon={<RightCircleOutlined />}
+  //           onClick={() => setShowEmptyData(!showEmptyData)}
+  //         >
+  //           {showEmptyData ? "Empty Data" : "Non-Empty Data"}
+  //         </Button>
+  //       </div> */}
+  //     {/* </div> */}
+  //   </>
+  // );
+
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+  const navigate = useNavigate();
   return (
-    <>
-      <Form form={form} component={false}>
-        <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
-          bordered
-          dataSource={displayedData}
-          columns={mergedColumns}
-          rowClassName={getRowClassName1} // Apply the class to edited rows
-          pagination={false}
-          scroll={{y:800}}
-        />
-       
-        <br></br>
-        <Pagination
-          showSizeChanger
-          onChange={handlePageChange}
-          total={filteredData.length} // Pass the total number of items in your data source
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
-          pageSizeOptions={[5, 10, 100, 500]}
-          current={currentPage}
-          pageSize={pageSize}
-          style={{ float: "right" }}
-        />
-      </Form>
-      <br></br>
-      <div
+    <Layout>
+      <Header
         style={{
-          display: "flex",
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          width: "100%",
+          display: "grid",
           alignItems: "center",
         }}
       >
-        <div style={{ marginLeft: "2cm" }}>
-          <Button
-            type="primary"
-            size="small"
-            icon={<RightCircleOutlined />}
-            onClick={() => setShowEmptyData(!showEmptyData)}
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={["2"]}
+          onClick={({ key }) => {
+            if (key === "signout") {
+              //Todo, sign out feature here
+            } else {
+              navigate(key);
+            }
+          }}
+          items={[
+            { label: "Overview", key: "/", icon: <HomeOutlined /> },
+            {
+              label: "Security",
+              key: "/security",
+              icon: <DashboardOutlined />,
+            },
+            {
+              label: "Dotinsights",
+              key: "/dotinsights",
+              icon: <UnorderedListOutlined />,
+            },
+            { label: "Profile", key: "/profile", icon: <ProfileOutlined /> },
+            {
+              label: "User guide",
+              key: "/user guide",
+              icon: <LogoutOutlined />,
+              danger: true,
+            },
+          ]}
+        />
+      </Header>
+      <Content
+        style={{
+          padding: "0 150px",
+        }}
+      >
+        <div>
+          <Form
+            form={form}
+            component={false}
+            style={{ backgroundColor: "#f79e94" }}
           >
-            {showEmptyData ? "Empty Data" : "Non-Empty Data"}
-          </Button>
+            <Table
+              components={{
+                body: {
+                  cell: EditableCell,
+                },
+              }}
+              bordered
+              dataSource={displayedData}
+              columns={mergedColumns}
+              rowClassName={getRowClassName1} // Apply the class to edited rows
+              pagination={false}
+              scroll={{ y: 800 }}
+            />
+            <br></br>
+          </Form>
+          <Pagination
+            showSizeChanger
+            onChange={handlePageChange}
+            total={filteredData.length} // Pass the total number of items in your data source
+            showTotal={(total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`
+            }
+            pageSizeOptions={[5, 10, 50, 100, 500]}
+            current={currentPage}
+            pageSize={pageSize}
+            style={{ float: "right" }}
+          />
         </div>
-      </div>
-    </>
+      </Content>
+      <Footer
+        style={{
+          textAlign: "center",
+        }}
+      >
+        SubWallet ©2023 Created by SubWallet Team
+      </Footer>
+    </Layout>
   );
 };
-
+// function Header() {
+//   return (
+//     <div
+//       style={{
+//         height: 60,
+//         backgroundColor: "#002273",
+//         color: "white",
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         fontWeight: "bold",
+//       }}
+//     >
+//       SubWallet I18N Tooling
+//     </div>
+//   );
+// }
+// function Footer() {
+//   return (
+//     <div
+//       style={{
+//         height: 60,
+//         backgroundColor: "#550099",
+//         color: "white",
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         fontWeight: "bold",
+//       }}
+//     >
+//       © SubWallet, 2023
+//     </div>
+//   );
+// }
+// function Content() {
+//   return (
+//     <div>
+//       <Routes>
+//         <Route path="/home" element={<div>Home</div>}></Route>
+//         <Route path="/dashboard" element={<div>Dashboard</div>}></Route>
+//         <Route path="/userList" element={<div>Users List</div>}></Route>
+//         <Route path="/profile" element={<div>Profile</div>}></Route>
+//         <Route path="/signout" element={<div>Signout</div>}></Route>
+//       </Routes>
+//     </div>
+//   );
+// }
+function SideMenu() {
+  const navigate = useNavigate();
+  return (
+    <div style={{ display: "flex", flexDirection: "row" }}>
+      <Menu
+        onClick={({ key }) => {
+          if (key === "signout") {
+            //Todo, sign out feature here
+          } else {
+            navigate(key);
+          }
+        }}
+        items={[
+          { label: "Home", key: "/", icon: <HomeOutlined /> },
+          {
+            label: "Dashboard",
+            key: "/dashboard",
+            icon: <DashboardOutlined />,
+          },
+          {
+            label: "Users List",
+            key: "/userList",
+            icon: <UnorderedListOutlined />,
+          },
+          { label: "Profile", key: "/profile", icon: <ProfileOutlined /> },
+          {
+            label: "Signout",
+            key: "/signout",
+            icon: <LogoutOutlined />,
+            danger: true,
+          },
+        ]}
+      ></Menu>
+    </div>
+  );
+}
 export default EditableTable;

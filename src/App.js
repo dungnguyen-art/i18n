@@ -23,47 +23,48 @@ const App = () => {
     localStorage.setItem("mergedData", JSON.stringify(data));
   }, [data]);
 
-  // const fetchDataFromStrapi = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:1338/api/i18ns/");
-  //     const dataStrapi = await response.json();
-  //     console.log("dataStrapi", dataStrapi);
+  const fetchDataFromStrapi = async () => {
+    try {
+      const response = await fetch("http://localhost:1338/api/i18ns/");
+      const dataStrapi = await response.json();
+      console.log("dataStrapi", dataStrapi);
 
-  //     // Process the data as needed
-  //     // For example, you may need to transform it to match your table structure
-  //     // Extract the keys from mergedData
-  //     const mergedDataKeys = Object.keys(mergedData[0]);
+      // Process the data as needed
+      // For example, you may need to transform it to match your table structure
+      // Extract the keys from mergedData
+      const mergedDataKeys = Object.keys(mergedData[0]);
+      console.log("mergedDataKeys", mergedDataKeys);
 
-  //     // Restructure dataStrapi to match the structure of mergedData and remove extra keys
-  //     const restructuredDataStrapi = dataStrapi.data.map((item) => {
-  //       const key = item.attributes.key;
-  //       const languages = {};
-  //       // Loop through the language keys from mergedData and extract matching language data
-  //       mergedDataKeys.forEach((langKey) => {
-  //         if (item.attributes[langKey]) {
-  //           languages[langKey] = item.attributes[langKey];
-  //         }
-  //       });
+      // Restructure dataStrapi to match the structure of mergedData and remove extra keys
+      const restructuredDataStrapi = dataStrapi.data.map((item) => {
+        const key = item.attributes.key;
+        const languages = {};
+        // Loop through the language keys from mergedData and extract matching language data
+        mergedDataKeys.forEach((langKey) => {
+          if (item.attributes[langKey]) {
+            languages[langKey] = item.attributes[langKey];
+          }
+        });
 
-  //       return {
-  //         id: item.id,
-  //         key,
-  //         ...languages,
-  //       };
-  //     });
-  //     console.log("restructuredDataStrapi", restructuredDataStrapi);
-  //     // Update the 'data' state with the fetched data
-  //     setData(restructuredDataStrapi);
+        return {
+          id: item.id,
+          key,
+          ...languages,
+        };
+      });
+      console.log("restructuredDataStrapi", restructuredDataStrapi);
+      // Update the 'data' state with the fetched data
+      setData(restructuredDataStrapi);
 
-  //     // Handle any errors that may occur during the fetch
-  //   } catch (error) {
-  //     console.error("Error fetching data from Strapi:", error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   // Fetch data from Strapi when the component mounts
-  //   fetchDataFromStrapi();
-  // }, []); // Empty dependency array to fetch data only on mount
+      // Handle any errors that may occur during the fetch
+    } catch (error) {
+      console.error("Error fetching data from Strapi:", error);
+    }
+  };
+  useEffect(() => {
+    // Fetch data from Strapi when the component mounts
+    fetchDataFromStrapi();
+  }, []); // Empty dependency array to fetch data only on mount
 
   // Import the fetchDataGithub function if it's defined in a separate module
 
