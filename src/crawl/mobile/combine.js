@@ -1,12 +1,11 @@
-import { mobi_en, en } from "./en";
-import { mobi_vi, vi } from "./vi";
-import { mobi_zh, zh } from "./zh";
-import { mobi_es, es } from "./es";
-import { mobi_ja, ja } from "./ja";
+import { mobi_en, en } from "./Js/en";
+import { mobi_vi, vi } from "./Js/vi";
+import { mobi_zh, zh } from "./Js/zh";
+import { mobi_es, es } from "./Js/es";
+import { mobi_ja, ja } from "./Js/ja";
 
 // Create an empty combined array
 const combinedMobi = [];
-
 // Iterate through keys in en.json
 for (const sectionKey in en) {
   if (!combinedMobi[sectionKey]) {

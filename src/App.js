@@ -5,6 +5,7 @@ import EditableTable from "./components/EditableTable"; // Import the EditableTa
 import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
 import MergeDataCrawl from "./crawl/MergeDataCrawl";
+import fetchAllData from "./crawl/fetchFromGithub";
 
 const App = () => {
   // State management
@@ -24,42 +25,42 @@ const App = () => {
   }, [data]);
 
 
-  const createDataToStrapi = async (record) => {
-    try {
-      const response = await fetch(
-        `http://localhost:1338/api/i18n-v3s`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", 
-          },
-          body: JSON.stringify(record),
-        }
-      );
+  // const createDataToStrapi = async (record) => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:1338/api/i18n-v3s`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json", 
+  //         },
+  //         body: JSON.stringify(record),
+  //       }
+  //     );
   
-      if (response.ok) {
-        const createdData = await response.json();
-        console.log(`Data created in Strapi:`, createdData);
-      } else {
-        console.error(`Failed to create data in Strapi`);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  //     if (response.ok) {
+  //       const createdData = await response.json();
+  //       console.log(`Data created in Strapi:`, createdData);
+  //     } else {
+  //       console.error(`Failed to create data in Strapi`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
   
-  useEffect(() => {
-    for (const key in MergeDataCrawl) {
-      if (MergeDataCrawl.hasOwnProperty(key)) {
-        const record = MergeDataCrawl[key];
-        const refactorData = {
-          "data": {}
-        };
-        refactorData.data = record
-        createDataToStrapi(refactorData);
-      }
-    }
-  }, [MergeDataCrawl]); 
+  // useEffect(() => {
+  //   for (const key in MergeDataCrawl) {
+  //     if (MergeDataCrawl.hasOwnProperty(key)) {
+  //       const record = MergeDataCrawl[key];
+  //       const refactorData = {
+  //         "data": {}
+  //       };
+  //       refactorData.data = record
+  //       createDataToStrapi(refactorData);
+  //     }
+  //   }
+  // }, [MergeDataCrawl]); 
 
   const fetchDataFromStrapi = async () => {
     try {
@@ -314,6 +315,7 @@ const App = () => {
   const getRowClassName = (record) => {
     return editedRows.includes(record.key) ? "edited-row" : "";
   };
+  console.log("fetchAllData", fetchAllData);
 
   return (
     <EditedSingleFormProvider>
