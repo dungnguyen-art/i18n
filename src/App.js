@@ -4,15 +4,15 @@ import mergedData from "./MergeData";
 import EditableTable from "./components/EditableTable"; // Import the EditableTable component
 import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
-import MergeDataCrawl from "./crawl/MergeDataCrawl";
-import fetchAllData from "./crawl/fetchFromGithub";
+// import MergeDataCrawl from "./crawl/MergeDataCrawl";
+import {MergeDataCrawl2} from "./crawl/fetchFromGithub";
 
 const App = () => {
   // State management
   const [form] = Form.useForm();
   const [data, setData] = useState(() => {
     const storedData = localStorage.getItem("mergedData");
-    return storedData ? JSON.parse(storedData) : MergeDataCrawl;
+    return storedData ? JSON.parse(storedData) : MergeDataCrawl2;
   });
   const [editingKey, setEditingKey] = useState("");
   // State to track edited rows
@@ -315,8 +315,8 @@ const App = () => {
   const getRowClassName = (record) => {
     return editedRows.includes(record.key) ? "edited-row" : "";
   };
-  console.log("fetchAllData", fetchAllData);
-
+  
+  console.log("MergeDataCrawl2", MergeDataCrawl2);
   return (
     <EditedSingleFormProvider>
       <EditableTable
