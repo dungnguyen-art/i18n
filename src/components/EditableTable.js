@@ -10,6 +10,7 @@ import {
   Menu,
   Breadcrumb,
   theme,
+  Input,
 } from "antd";
 import {
   SearchOutlined,
@@ -42,6 +43,8 @@ const EditableTable = ({
   form,
   setData, // Pass the setData function as a prop
   getRowClassName1, // Apply the class to edited rows
+  onSearchChange,
+  onSearchSubmit
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   const [parentData, setParentData] = useState(true);
@@ -222,9 +225,20 @@ const EditableTable = ({
             backgroundColor: "purple",
             height: "50px",
             color: "white",
+            display: 'flex',
+            justifyContent: 'space-between',
           }}
         >
-          I18N Tool - SubWallet
+          <span style={{ flex: '1' }}>I18N Tool - SubWallet</span>
+          <div>
+            <Input
+              placeholder="Input your Token"
+              style={{ marginLeft: 10, width: 200}}
+              onChange={onSearchChange}
+              onPressEnter={onSearchSubmit}
+              // Add your form logic (e.g., onChange, onSubmit) here
+            />
+          </div>
         </Header>
 
         <div

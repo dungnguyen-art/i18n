@@ -3,21 +3,35 @@ import { useState, useEffect } from "react";
 import EditableTable from "./components/EditableTable";
 import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
-const token =
-  "096ff9f4305ea99d58c85125d073c6cc09230dd234c5072b31d79743376444e2031db6c60ecf3ce9e7def98afae2fe5c1625bc14a5b7b7d8f1ca694c724604702584af4d9e6b75fead0bc2a5ab5253dbbebd3ce03ee82551c49e206df3000d9b1170d49741b3cbc5bbddb08143558494b48a668250f54fb02b0b20951ad0f2ea";
-
+// const token =
+// "096ff9f4305ea99d58c85125d073c6cc09230dd234c5072b31d79743376444e2031db6c60ecf3ce9e7def98afae2fe5c1625bc14a5b7b7d8f1ca694c724604702584af4d9e6b75fead0bc2a5ab5253dbbebd3ce03ee82551c49e206df3000d9b1170d49741b3cbc5bbddb08143558494b48a668250f54fb02b0b20951ad0f2ea";
+// let token = "";
 const App = () => {
   // State management
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
   const [editedRows, setEditedRows] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [token, setToken] = useState("");
   const isEditing = (record) => record.key === editingKey;
+  const handleSearchChange = (e) => {
+    setSearchValue(e.target.value);
+  };
 
+  const handleSearchSubmit = () => {
+    // Use the searchValue in the App component
+    console.log("Search submitted:", searchValue);
+    // token = searchValue;
+    // console.log("token in handleSubmit", token);
+    setToken(searchValue)
+  };
+  console.log("token", token);
   async function fetchAllRecords() {
     const recordsPerPage = 50; // Number of records to fetch per request
     let allRecords = [];
     let currentPage = 0;
+    console.log("token", token);
 
     while (true) {
       const response = await fetch(
@@ -75,7 +89,7 @@ const App = () => {
       }
     };
     fetchDataFromStrapi();
-  }, []);
+  }, [token]);
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -88,13 +102,7 @@ const App = () => {
     setEditingKey("");
   };
 
-  const handleSave = async (
-    editedSingleForm,
-    data,
-    setData,
-    key,
-    
-  ) => {
+  const handleSave = async (editedSingleForm, data, setData, key) => {
     try {
       const row = await form.validateFields();
       for (const langCode in row) {
@@ -232,6 +240,8 @@ const App = () => {
         form={form} // Pass form as a prop
         setData={setData}
         getRowClassName1={getRowClassName}
+        onSearchChange={handleSearchChange}
+        onSearchSubmit={handleSearchSubmit}
       />
     </EditedSingleFormProvider>
   );
