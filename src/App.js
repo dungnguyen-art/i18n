@@ -1,168 +1,81 @@
 import { Form } from "antd";
 import { useState, useEffect } from "react";
-import mergedData from "./MergeData";
-import EditableTable from "./components/EditableTable"; // Import the EditableTable component
+import EditableTable from "./components/EditableTable";
 import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
-// import MergeDataCrawl from "./crawl/MergeDataCrawl";
-import {MergeDataCrawl2} from "./crawl/fetchFromGithub";
+const token =
+  "096ff9f4305ea99d58c85125d073c6cc09230dd234c5072b31d79743376444e2031db6c60ecf3ce9e7def98afae2fe5c1625bc14a5b7b7d8f1ca694c724604702584af4d9e6b75fead0bc2a5ab5253dbbebd3ce03ee82551c49e206df3000d9b1170d49741b3cbc5bbddb08143558494b48a668250f54fb02b0b20951ad0f2ea";
 
 const App = () => {
   // State management
   const [form] = Form.useForm();
-  const [data, setData] = useState(() => {
-    const storedData = localStorage.getItem("mergedData");
-    return storedData ? JSON.parse(storedData) : MergeDataCrawl2;
-  });
+  const [data, setData] = useState([]);
   const [editingKey, setEditingKey] = useState("");
-  // State to track edited rows
   const [editedRows, setEditedRows] = useState([]);
-  // Functions for handling editing
   const isEditing = (record) => record.key === editingKey;
-  useEffect(() => {
-    // Save data to localStorage whenever it changes
-    localStorage.setItem("mergedData", JSON.stringify(data));
-  }, [data]);
 
+  async function fetchAllRecords() {
+    const recordsPerPage = 50; // Number of records to fetch per request
+    let allRecords = [];
+    let currentPage = 0;
 
-  // const createDataToStrapi = async (record) => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:1338/api/i18n-v3s`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json", 
-  //         },
-  //         body: JSON.stringify(record),
-  //       }
-  //     );
-  
-  //     if (response.ok) {
-  //       const createdData = await response.json();
-  //       console.log(`Data created in Strapi:`, createdData);
-  //     } else {
-  //       console.error(`Failed to create data in Strapi`);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-  
-  // useEffect(() => {
-  //   for (const key in MergeDataCrawl) {
-  //     if (MergeDataCrawl.hasOwnProperty(key)) {
-  //       const record = MergeDataCrawl[key];
-  //       const refactorData = {
-  //         "data": {}
-  //       };
-  //       refactorData.data = record
-  //       createDataToStrapi(refactorData);
-  //     }
-  //   }
-  // }, [MergeDataCrawl]); 
+    while (true) {
+      const response = await fetch(
+        `http://localhost:1337/api/i18ns?populate=*&pagination[start]=${currentPage}&pagination[limit]=${recordsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const fetchDataFromStrapi = async () => {
-    try {
-      const response = await fetch("http://localhost:1338/api/i18n-v3s");
+      if (response.status !== 200) {
+        break;
+      }
+
       const dataStrapi = await response.json();
-      console.log("dataStrapi", dataStrapi);
 
-      // Process the data as needed
-      // Extract the keys from mergedData
-      const mergedDataKeys = Object.keys(mergedData[0]);
-      console.log("mergedDataKeys", mergedDataKeys);
-      // mergedDataKeys.push("platform");
+      if (dataStrapi.data.length === 0) {
+        break;
+      }
 
-      // // Restructure dataStrapi to match the structure of mergedData and remove extra keys
-      const restructuredDataStrapi = dataStrapi.data.map((item) => {
-        const key = item.attributes.key;
-        const languages = {};
-        // Loop through the language keys from mergedData and extract matching language data
-        mergedDataKeys.forEach((langKey) => {
-          if (item.attributes[langKey]) {
-            languages[langKey] = item.attributes[langKey];
-          }
-        });
-
-        return {
-          id: item.id,
-          key,
-          ...languages,
-        };
-      });
-      // Update the 'data' state with the fetched data
-      console.log("restructuredDataStrapi", restructuredDataStrapi);
-      setData(restructuredDataStrapi);
-
-      // Handle any errors that may occur during the fetch
-    } catch (error) {
-      console.error("Error fetching data from Strapi:", error);
+      allRecords = allRecords.concat(dataStrapi.data);
+      currentPage += recordsPerPage;
     }
-  };
-  // useEffect(() => {
-    // Fetch data from Strapi when the component mounts
+    return allRecords;
+  }
+
+  useEffect(() => {
+    const fetchDataFromStrapi = async () => {
+      try {
+        const dataStrapi = await fetchAllRecords();
+        const mergedDataKeys = ["en", "vi", "zh", "ja", "ru"];
+        const restructuredDataStrapi = dataStrapi.map((item) => {
+          const key = item.attributes.key;
+          const languages = {};
+          mergedDataKeys.forEach((langKey) => {
+            if (item.attributes[langKey]) {
+              languages[langKey] = {
+                web: item.attributes[langKey].web || null,
+                mobi: item.attributes[langKey].mobi || null,
+                extension: item.attributes[langKey].extension || null,
+              };
+            }
+          });
+
+          return {
+            id: item.id,
+            key,
+            ...languages,
+          };
+        });
+        setData(restructuredDataStrapi);
+      } catch (error) {
+        console.error("Error fetching data from Strapi:", error);
+      }
+    };
     fetchDataFromStrapi();
-  // }, []); // Empty dependency array to fetch data only on mount
-
-  // Import the fetchDataGithub function if it's defined in a separate module
-
-  // const fetchDataGithub = async (url) => {
-  //   try {
-  //     const response = await fetch(url);
-
-  //     if (!response.ok) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = await response.text();
-  //     return data;
-  //   } catch (error) {
-  //     console.error("There was a problem fetching the data:", error);
-  //     throw error; // Re-throw the error to handle it later if needed
-  //   }
-  // };
-
-  // const fetchAllData = async () => {
-  //   const url_en =
-  //     "https://raw.githubusercontent.com/Koniverse/SubWallet-Mobile/master/src/utils/i18n/en_US.ts";
-  //   const url_vi =
-  //     "https://raw.githubusercontent.com/Koniverse/SubWallet-Mobile/master/src/utils/i18n/vi_VN.ts";
-  //   const url_zh =
-  //     "https://raw.githubusercontent.com/Koniverse/SubWallet-Mobile/master/src/utils/i18n/zh_CN.ts";
-
-  //   try {
-
-  //     const mobi_en = await fetchDataGithub(url_en);
-  //     const mobi_vi = await fetchDataGithub(url_vi);
-  //     const mobi_zh = await fetchDataGithub(url_zh);
-
-  //     const cleanedMobiEn = JSON.stringify(mobi_en).replace(
-  //       /export const en =/,
-  //       ""
-  //     );
-  //     const cleanedMobiVi = JSON.stringify(mobi_vi).replace(
-  //       /export const vi =/,
-  //       ""
-  //     );
-  //     const cleanedMobiZh = JSON.stringify(mobi_zh).replace(
-  //       /export const zh =/,
-  //       ""
-  //     );
-
-  //     // Convert cleaned data to JSON objects
-  //     const jsonDataEn = JSON.parse(cleanedMobiEn);
-  //     const jsonDataVi = JSON.parse(cleanedMobiVi);
-  //     const jsonDataZh = JSON.parse(cleanedMobiZh);
-  //     console.log("jsonDataEn: ", jsonDataEn);
-  //   } catch (error) {
-  //     // Handle errors here if needed
-  //     console.error("Error:", error);
-  //   }
-  // };
-
-  // Call the fetchAllData function to fetch and process the data
-  // fetchAllData();
+  }, []);
 
   const edit = (record) => {
     form.setFieldsValue({
@@ -180,16 +93,33 @@ const App = () => {
     data,
     setData,
     key,
-    isParentData = false
+    
   ) => {
     try {
-      console.log(`handleSave called! -> parentData==${isParentData}`);
-      console.log("data", data);
       const row = await form.validateFields();
-      console.log("row", row);
+      for (const langCode in row) {
+        if (langCode !== "key") {
+          const lang = row[langCode];
+          // Check if only one field exists in the language
+          const fieldCount = Object.keys(row[langCode]).length;
+          if (fieldCount === 1) {
+            // Get the existing value
+            const existingValue = Object.values(lang).find(
+              (value) => value !== null
+            );
+
+            // Update all three fields
+            lang.web = existingValue;
+            lang.mobi = existingValue;
+            lang.extension = existingValue;
+          }
+        }
+      }
 
       // Find the previous data for the edited row
       const previousData = data.find((item) => item.key === key);
+      row["id"] = previousData.id;
+      row["key"] = previousData.key;
 
       function areAllValuesEqual(row, previousData) {
         for (const language in row) {
@@ -206,8 +136,6 @@ const App = () => {
         }
         return true;
       }
-
-      // Check if all values in "row" are equal to "previousData"
       const result = areAllValuesEqual(row, previousData);
 
       if (!result) {
@@ -223,6 +151,7 @@ const App = () => {
         }
         return item;
       });
+
       // if (isParentData) {
       const updatedData = newData.map((item) => {
         const editedItem = editedSingleForm[item.key];
@@ -251,60 +180,34 @@ const App = () => {
       });
       setData(updatedData);
 
-      // PUT method: Send a PUT request to update the data in Strapi
-      const updatedDataStrapi = updatedData.map((item) => {
-        const languages = Object.keys(item).filter(
-          (key) => key !== "id" && key !== "key" && key !== "isEdited"
-        );
-        const data = {
-          key: item.key,
-        };
-
-        languages.forEach((language) => {
-          data[language] = {
-            web: item[language].web,
-            mobi: item[language].mobi,
-            extension: item[language].extension,
-          };
-        });
-
-        return {
-          id: item.id,
-          data: data,
-        };
-      });
-
-      const putDataToStrapi = async (updatedDataStrapi) => {
+      const putDataToStrapi = async (row) => {
         try {
-          for (const id in updatedDataStrapi) {
-            if (updatedDataStrapi.hasOwnProperty(id)) {
-              const dataToUpdate = updatedDataStrapi[id];
-
-              const idx = dataToUpdate.id;
-              delete dataToUpdate.id;
-              const response = await fetch(
-                `http://localhost:1338/api/i18n-v3s/${idx}`, // Make sure to use the correct URL
-                {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json", // Set the content type to JSON
-                  },
-                  body: JSON.stringify(dataToUpdate), // Convert data to JSON string
-                }
-              );
-
-              if (response.ok) {
-                console.log(`Data with ID ${idx} updated in Strapi`);
-              } else {
-                console.error(`Failed to update data with ID ${idx} in Strapi`);
-              }
+          const idx = row.id;
+          delete row.id;
+          const record = {};
+          record["data"] = row;
+          const response = await fetch(
+            `http://localhost:1337/api/i18ns/${idx}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(record),
             }
+          );
+
+          if (response.ok) {
+            console.log(`Data with ID ${idx} updated in Strapi`);
+          } else {
+            console.error(`Failed to update data with ID ${idx} in Strapi`);
           }
         } catch (error) {
           console.error("Error:", error);
         }
       };
-      putDataToStrapi(updatedDataStrapi);
+      putDataToStrapi(row);
 
       setEditingKey("");
     } catch (errInfo) {
@@ -315,8 +218,7 @@ const App = () => {
   const getRowClassName = (record) => {
     return editedRows.includes(record.key) ? "edited-row" : "";
   };
-  
-  console.log("MergeDataCrawl2", MergeDataCrawl2);
+
   return (
     <EditedSingleFormProvider>
       <EditableTable

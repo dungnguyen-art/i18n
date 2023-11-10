@@ -28,7 +28,7 @@ import FilterDropdown from "./FilterDropdown";
 import EditableCell from "./EditableCell";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
-import { Route, Routes, useNavigate, userNavigate } from "react-router-dom";
+// import { Route, Routes, useNavigate, userNavigate } from "react-router-dom";
 const { Header, Content, Footer } = Layout;
 
 const EditableTable = ({
@@ -57,7 +57,7 @@ const EditableTable = ({
     { title: "Vietnamese", dataIndex: "vi" },
     { title: "Chinese", dataIndex: "zh" },
     { title: "Japanese", dataIndex: "ja" },
-    { title: "Spanish", dataIndex: "es" },
+    { title: "Russian", dataIndex: "ru" },
   ];
 
   const columns = [
@@ -140,11 +140,7 @@ const EditableTable = ({
           <span>
             <Button
               onClick={() => {
-                if (true) {
-                  save(editedSingleForm, data, setData, record.key, parentData);
-                } else {
-                  save(record.key);
-                }
+                save(editedSingleForm, data, setData, record.key, parentData);
               }}
               style={{ marginRight: 8 }}
               icon={<SaveOutlined />}
@@ -189,7 +185,6 @@ const EditableTable = ({
       }),
     };
   });
-
   const filteredData = showEmptyData
     ? data
     : data.filter((record) => {
@@ -205,8 +200,6 @@ const EditableTable = ({
         });
       });
 
-  console.log("filteredData", filteredData);
-
   // Calculate the start and end indices for displaying data
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, filteredData.length);
@@ -218,129 +211,34 @@ const EditableTable = ({
     setPageSize(size);
   };
 
-  // return (
-  //   <>
-  //     <Header />
-  //     <div style={{ display: "flex", flexDirection: "row", flex: 1 }}>
-  //       <SideMenu />
-  //       <Content />
-  //       <Form
-  //         form={form}
-  //         component={false}
-  //         style={{ backgroundColor: "#f79e94" }}
-  //       >
-  //         <Table
-  //           components={{
-  //             body: {
-  //               cell: EditableCell,
-  //             },
-  //           }}
-  //           bordered
-  //           dataSource={displayedData}
-  //           columns={mergedColumns}
-  //           rowClassName={getRowClassName1} // Apply the class to edited rows
-  //           pagination={false}
-  //           scroll={{ y: 800 }}
-  //         />
-  //         <br></br>
-  //       </Form>
-  //     </div>
-
-  //     <Pagination
-  //       showSizeChanger
-  //       onChange={handlePageChange}
-  //       total={filteredData.length} // Pass the total number of items in your data source
-  //       showTotal={(total, range) =>
-  //         `${range[0]}-${range[1]} of ${total} items`
-  //       }
-  //       pageSizeOptions={[5, 10, 100, 500]}
-  //       current={currentPage}
-  //       pageSize={pageSize}
-  //       style={{ float: "right" }}
-  //     />
-  //     <br />
-  //     <br />
-  //     <Footer />
-  //     {/* <div
-  //       style={{
-  //         display: "flex",
-  //         alignItems: "center",
-  //       }}
-  //     > */}
-  //     {/* <div style={{ marginLeft: "2cm" }}>
-  //         <Button
-  //           type="primary"
-  //           size="small"
-  //           icon={<RightCircleOutlined />}
-  //           onClick={() => setShowEmptyData(!showEmptyData)}
-  //         >
-  //           {showEmptyData ? "Empty Data" : "Non-Empty Data"}
-  //         </Button>
-  //       </div> */}
-  //     {/* </div> */}
-  //   </>
-  // );
-
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-  const navigate = useNavigate();
   return (
-    <Layout>
-      <Header
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1,
-          width: "100%",
-          display: "grid",
-          alignItems: "center",
-        }}
+    <>
+      <div
+        style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
       >
-        <div className="demo-logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={["2"]}
-          onClick={({ key }) => {
-            if (key === "signout") {
-              //Todo, sign out feature here
-            } else {
-              navigate(key);
-            }
+        <Header
+          style={{
+            textAlign: "center",
+            backgroundColor: "purple",
+            height: "50px",
+            color: "white",
           }}
-          items={[
-            { label: "Overview", key: "/", icon: <HomeOutlined /> },
-            {
-              label: "Security",
-              key: "/security",
-              icon: <DashboardOutlined />,
-            },
-            {
-              label: "Dotinsights",
-              key: "/dotinsights",
-              icon: <UnorderedListOutlined />,
-            },
-            { label: "Profile", key: "/profile", icon: <ProfileOutlined /> },
-            {
-              label: "User guide",
-              key: "/user guide",
-              icon: <LogoutOutlined />,
-              danger: true,
-            },
-          ]}
-        />
-      </Header>
-      <Content
-        style={{
-          padding: "0 150px",
-        }}
-      >
-        <div>
+        >
+          I18N Tool - SubWallet
+        </Header>
+
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            overflow: "hidden",
+          }}
+        >
           <Form
             form={form}
             component={false}
-            style={{ backgroundColor: "#f79e94" }}
+            style={{ backgroundColor: "#f79e94", flex: 1, overflow: "auto" }}
           >
             <Table
               components={{
@@ -351,117 +249,45 @@ const EditableTable = ({
               bordered
               dataSource={displayedData}
               columns={mergedColumns}
-              rowClassName={getRowClassName1} // Apply the class to edited rows
+              rowClassName={getRowClassName1}
               pagination={false}
-              scroll={{ y: 800 }}
+              scroll={{ y: 600 }}
+              style={{ maxHeight: "calc(100vh - 200px)", padding: "0 200px" }}
             />
-            <br></br>
           </Form>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            padding: "1px",
+          }}
+        >
           <Pagination
             showSizeChanger
             onChange={handlePageChange}
-            total={filteredData.length} // Pass the total number of items in your data source
+            total={filteredData.length}
             showTotal={(total, range) =>
               `${range[0]}-${range[1]} of ${total} items`
             }
-            pageSizeOptions={[5, 10, 50, 100, 500]}
+            pageSizeOptions={[5, 10, 100, 500]}
             current={currentPage}
             pageSize={pageSize}
-            style={{ float: "right" }}
+            style={{ float: "right", padding: "0 20px" }}
           />
         </div>
-      </Content>
-      <Footer
-        style={{
-          textAlign: "center",
-        }}
-      >
-        SubWallet ©2023 Created by SubWallet Team
-      </Footer>
-    </Layout>
+        <Footer
+          style={{
+            textAlign: "center",
+            backgroundColor: "purple",
+            color: "white",
+            height: "50px",
+          }}
+        >
+          SubWallet ©2023 Created by SubWallet Team
+        </Footer>
+      </div>
+    </>
   );
 };
-// function Header() {
-//   return (
-//     <div
-//       style={{
-//         height: 60,
-//         backgroundColor: "#002273",
-//         color: "white",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         fontWeight: "bold",
-//       }}
-//     >
-//       SubWallet I18N Tooling
-//     </div>
-//   );
-// }
-// function Footer() {
-//   return (
-//     <div
-//       style={{
-//         height: 60,
-//         backgroundColor: "#550099",
-//         color: "white",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         fontWeight: "bold",
-//       }}
-//     >
-//       © SubWallet, 2023
-//     </div>
-//   );
-// }
-// function Content() {
-//   return (
-//     <div>
-//       <Routes>
-//         <Route path="/home" element={<div>Home</div>}></Route>
-//         <Route path="/dashboard" element={<div>Dashboard</div>}></Route>
-//         <Route path="/userList" element={<div>Users List</div>}></Route>
-//         <Route path="/profile" element={<div>Profile</div>}></Route>
-//         <Route path="/signout" element={<div>Signout</div>}></Route>
-//       </Routes>
-//     </div>
-//   );
-// }
-function SideMenu() {
-  const navigate = useNavigate();
-  return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <Menu
-        onClick={({ key }) => {
-          if (key === "signout") {
-            //Todo, sign out feature here
-          } else {
-            navigate(key);
-          }
-        }}
-        items={[
-          { label: "Home", key: "/", icon: <HomeOutlined /> },
-          {
-            label: "Dashboard",
-            key: "/dashboard",
-            icon: <DashboardOutlined />,
-          },
-          {
-            label: "Users List",
-            key: "/userList",
-            icon: <UnorderedListOutlined />,
-          },
-          { label: "Profile", key: "/profile", icon: <ProfileOutlined /> },
-          {
-            label: "Signout",
-            key: "/signout",
-            icon: <LogoutOutlined />,
-            danger: true,
-          },
-        ]}
-      ></Menu>
-    </div>
-  );
-}
 export default EditableTable;

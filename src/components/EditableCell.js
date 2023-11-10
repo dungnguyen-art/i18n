@@ -1,6 +1,5 @@
 import React from 'react';
 import { InputNumber, Input, Form } from 'antd';
-
 const EditableCell = ({
     editing,
     dataIndex,

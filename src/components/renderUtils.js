@@ -33,7 +33,6 @@ export const Render = ({
 }) => {
   return (
     <>
-      {/* Other components */}
       <RenderTranslatedCell
         record={record}
         dataIndex={dataIndex}
@@ -60,13 +59,13 @@ const RenderTranslatedCell = ({
   const allEqual = web === mobi && mobi === extension;
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
   const [singleInput, setSingleInput] = useState(allEqual);
-  useEffect(() => {
-    updateParentData(singleInput);
-  }, [singleInput]);
+  // useEffect(() => {
+  //   updateParentData(singleInput);
+  //   setParentData(singleInput);
+  // }, [singleInput]);
 
   const toggleInputMode = () => {
     setSingleInput((prevMode) => !prevMode);
-    // updateParentData(singleInput);
   };
 
   if (isEditing(record)) {
@@ -75,32 +74,15 @@ const RenderTranslatedCell = ({
         {singleInput ? (
           <div style={{ marginBottom: "10px" }}>
             <label htmlFor={`${dataIndex}-web`}>All:</label>
-            <br></br>
-            <Input
-              id={`${dataIndex}-web`}
-              placeholder={record[dataIndex].web}
-              value={
-                editedSingleForm[record.key]?.[dataIndex]?.web ||
-                record[dataIndex].web
-              }
-              onChange={(e) => {
-                const updatedValue = e.target.value;
-                const updatedEditedData = {
-                  ...editedSingleForm,
-                  [record.key]: {
-                    ...editedSingleForm[record.key],
-                    [dataIndex]: {
-                      ...editedSingleForm[record.key]?.[dataIndex],
-                      web: updatedValue,
-                      mobi: updatedValue,
-                      extension: updatedValue,
-                    },
-                  },
-                };
-                setEditedSingleForm(updatedEditedData);
-              }}
-              style={{ width: "86.3%" }}
-            />
+
+            {renderEditableCell(
+              record,
+              [dataIndex, "web"],
+              "web".charAt(0).toUpperCase() + "web".slice(1),
+              "text",
+              isEditing(record),
+              true
+            )}
           </div>
         ) : (
           ["web", "mobi", "extension"].map((key) => (
