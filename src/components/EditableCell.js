@@ -3,12 +3,10 @@ import { InputNumber, Input, Form } from 'antd';
 const EditableCell = ({
     editing,
     dataIndex,
-    title,
     inputType,
     record,
     index,
     children,
-    updateAllFields,
     ...restProps
   }) => {
     const inputNode = inputType === "number" ? <InputNumber /> : <Input />;
@@ -21,12 +19,6 @@ const EditableCell = ({
               margin: 0,
               width:"100%"
             }}
-            rules={[
-              {
-                // required: true,
-                // message: `Please Input ${title}!`,
-              },
-            ]}
           >
           {inputNode}
           </Form.Item>

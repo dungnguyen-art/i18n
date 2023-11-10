@@ -6,31 +6,18 @@ import {
   Button,
   Pagination,
   Layout,
-  Space,
-  Menu,
-  Breadcrumb,
-  theme,
   Input,
 } from "antd";
 import {
   SearchOutlined,
-  DownloadOutlined,
-  RightCircleOutlined,
   EditOutlined,
-  SaveOutlined,
   DeleteOutlined,
-  HomeOutlined,
-  DashboardOutlined,
-  UnorderedListOutlined,
-  ProfileOutlined,
-  LogoutOutlined,
 } from "@ant-design/icons";
 import FilterDropdown from "./FilterDropdown";
 import EditableCell from "./EditableCell";
 import { Render } from "./renderUtils";
 import { useEditedSingleForm } from "./EditedSingleFormContext";
-// import { Route, Routes, useNavigate, userNavigate } from "react-router-dom";
-const { Header, Content, Footer } = Layout;
+const { Header, Footer } = Layout;
 
 const EditableTable = ({
   data,
@@ -39,21 +26,17 @@ const EditableTable = ({
   save,
   cancel,
   editingKey,
-  setEditingKey,
   form,
-  setData, // Pass the setData function as a prop
-  getRowClassName1, // Apply the class to edited rows
+  setData, 
+  getRowClassName1,
   onSearchChange,
-  onSearchSubmit
+  onSearchSubmit,
 }) => {
   const [showEmptyData, setShowEmptyData] = useState(true);
   const [parentData, setParentData] = useState(true);
   const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const updateParentData = (receive) => {
-    setParentData(receive);
-  };
 
   const languages = [
     { title: "English", dataIndex: "en" },
@@ -98,10 +81,6 @@ const EditableTable = ({
           record={record}
           dataIndex={language.dataIndex}
           isEditing={isEditing}
-          setData={setData}
-          data={data}
-          updateParentData={updateParentData}
-          setParentData={setParentData}
         />
       ),
       filterDropdown: ({
@@ -141,15 +120,26 @@ const EditableTable = ({
         const editable = isEditing(record);
         return editable ? (
           <span>
-            <Button
-              onClick={() => {
+            <Popconfirm
+              title="Attention"
+              description={
+                <>
+                  <p>
+                    <strong>Single</strong> mode:  Updates all three fields.
+                  </p>
+                  <p>
+                    <strong>Separate</strong> mode: Updates each field individually.
+                  </p>
+                </>
+              }
+              onConfirm={() => {
                 save(editedSingleForm, data, setData, record.key, parentData);
               }}
-              style={{ marginRight: 8 }}
-              icon={<SaveOutlined />}
+              okText="Yes"
+              cancelText="No"
             >
-              Save
-            </Button>
+              <Button style={{ marginRight: 8 }}>Save</Button>
+            </Popconfirm>
             <Button>
               <Popconfirm
                 title="Sure to cancel?"
@@ -203,13 +193,11 @@ const EditableTable = ({
         });
       });
 
-  // Calculate the start and end indices for displaying data
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, filteredData.length);
   const displayedData = filteredData.slice(startIndex, endIndex);
 
   const handlePageChange = (page, size) => {
-    // Update the current page and page size state variables
     setCurrentPage(page);
     setPageSize(size);
   };
@@ -225,18 +213,17 @@ const EditableTable = ({
             backgroundColor: "purple",
             height: "50px",
             color: "white",
-            display: 'flex',
-            justifyContent: 'space-between',
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
-          <span style={{ flex: '1' }}>I18N Tool - SubWallet</span>
+          <span style={{ flex: "1" }}>I18N Tool - SubWallet</span>
           <div>
             <Input
               placeholder="Input your Token"
-              style={{ marginLeft: 10, width: 200}}
+              style={{ marginLeft: 10, width: 200 }}
               onChange={onSearchChange}
               onPressEnter={onSearchSubmit}
-              // Add your form logic (e.g., onChange, onSubmit) here
             />
           </div>
         </Header>

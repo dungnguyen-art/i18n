@@ -1,24 +1,18 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState } from "react";
 import EditableCell from "./EditableCell";
-import { Input, Switch } from "antd";
-import { useEditedSingleForm } from "./EditedSingleFormContext";
-import { debounce } from "lodash";
+import { Switch } from "antd";
 
 const renderEditableCell = (
   record,
   dataIndex,
-  title,
   inputType,
   isEditing,
-  updateAllFields
 ) => (
   <EditableCell
     editing={isEditing}
     dataIndex={dataIndex}
-    title={title}
     inputType={inputType}
     record={record}
-    updateAllFields={updateAllFields}
   />
 );
 
@@ -26,10 +20,6 @@ export const Render = ({
   record,
   dataIndex,
   isEditing,
-  setData,
-  data,
-  updateParentData,
-  setParentData,
 }) => {
   return (
     <>
@@ -37,10 +27,6 @@ export const Render = ({
         record={record}
         dataIndex={dataIndex}
         isEditing={isEditing}
-        setData={setData}
-        data={data}
-        updateParentData={updateParentData}
-        setParentData={setParentData}
       />
     </>
   );
@@ -50,19 +36,10 @@ const RenderTranslatedCell = ({
   record,
   dataIndex,
   isEditing,
-  setData,
-  data,
-  updateParentData,
-  setParentData,
 }) => {
   const { web, mobi, extension } = record[dataIndex];
   const allEqual = web === mobi && mobi === extension;
-  const { editedSingleForm, setEditedSingleForm } = useEditedSingleForm();
   const [singleInput, setSingleInput] = useState(allEqual);
-  // useEffect(() => {
-  //   updateParentData(singleInput);
-  //   setParentData(singleInput);
-  // }, [singleInput]);
 
   const toggleInputMode = () => {
     setSingleInput((prevMode) => !prevMode);

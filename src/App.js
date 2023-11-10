@@ -5,7 +5,6 @@ import { EditedSingleFormProvider } from "./components/EditedSingleFormContext";
 import "./App.css";
 // const token =
 // "096ff9f4305ea99d58c85125d073c6cc09230dd234c5072b31d79743376444e2031db6c60ecf3ce9e7def98afae2fe5c1625bc14a5b7b7d8f1ca694c724604702584af4d9e6b75fead0bc2a5ab5253dbbebd3ce03ee82551c49e206df3000d9b1170d49741b3cbc5bbddb08143558494b48a668250f54fb02b0b20951ad0f2ea";
-// let token = "";
 const App = () => {
   // State management
   const [form] = Form.useForm();
@@ -20,18 +19,12 @@ const App = () => {
   };
 
   const handleSearchSubmit = () => {
-    // Use the searchValue in the App component
-    console.log("Search submitted:", searchValue);
-    // token = searchValue;
-    // console.log("token in handleSubmit", token);
     setToken(searchValue)
   };
-  console.log("token", token);
   async function fetchAllRecords() {
-    const recordsPerPage = 50; // Number of records to fetch per request
+    const recordsPerPage = 50; 
     let allRecords = [];
     let currentPage = 0;
-    console.log("token", token);
 
     while (true) {
       const response = await fetch(
@@ -108,23 +101,17 @@ const App = () => {
       for (const langCode in row) {
         if (langCode !== "key") {
           const lang = row[langCode];
-          // Check if only one field exists in the language
           const fieldCount = Object.keys(row[langCode]).length;
           if (fieldCount === 1) {
-            // Get the existing value
             const existingValue = Object.values(lang).find(
               (value) => value !== null
             );
-
-            // Update all three fields
             lang.web = existingValue;
             lang.mobi = existingValue;
             lang.extension = existingValue;
           }
         }
       }
-
-      // Find the previous data for the edited row
       const previousData = data.find((item) => item.key === key);
       row["id"] = previousData.id;
       row["key"] = previousData.key;
@@ -147,9 +134,7 @@ const App = () => {
       const result = areAllValuesEqual(row, previousData);
 
       if (!result) {
-        // Data has changed, update the edited row's isEdited flag
         previousData.isEdited = true;
-        // Add the edited row's key to the editedRows state
         setEditedRows([...editedRows, key]);
       }
 
@@ -160,7 +145,6 @@ const App = () => {
         return item;
       });
 
-      // if (isParentData) {
       const updatedData = newData.map((item) => {
         const editedItem = editedSingleForm[item.key];
 
@@ -237,7 +221,7 @@ const App = () => {
         cancel={cancel}
         editingKey={editingKey}
         setEditingKey={setEditingKey}
-        form={form} // Pass form as a prop
+        form={form} 
         setData={setData}
         getRowClassName1={getRowClassName}
         onSearchChange={handleSearchChange}
